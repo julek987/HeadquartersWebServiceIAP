@@ -7,7 +7,7 @@ import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatche
 public class SpringInit extends AbstractAnnotationConfigDispatcherServletInitializer {
 
     protected Class<?>[] getRootConfigClasses() {
-        return new Class[]{SpringConfiguration.class};
+        return new Class[]{SpringConfiguration.class, HibernatePersistenceConfiguration.class};
     }
 
     protected Class<?>[] getServletConfigClasses() {
