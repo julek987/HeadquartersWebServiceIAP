@@ -25,9 +25,9 @@ public class HibernatePersistenceConfiguration {
     public DataSource dataSource() {
         BasicDataSource dataSource = new BasicDataSource();
         dataSource.setDriverClassName("org.postgresql.Driver");
-        dataSource.setUrl("jdbc:postgresql://localhost:5432/internet_app_headquarters?characterEncoding=UTF-8");
-        dataSource.setUsername("postgres");
-        dataSource.setPassword("password");
+        dataSource.setUrl("SUPER-SECRET-XD");
+        dataSource.setUsername("SUPER-SECRET-XD");
+        dataSource.setPassword("SUPER-SECRET-XD");
         return dataSource;
     }
 
