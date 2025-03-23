@@ -22,9 +22,7 @@ public class BranchController {
 
     @PostMapping
     public ResponseEntity<Branch> addBranch(@RequestBody Branch branch) {
-
         Timestamp now = new Timestamp(System.currentTimeMillis() / 1000);
-
         branch.setCreatedAt(now);
         branch.setModifiedAt(now);
 
@@ -43,8 +41,8 @@ public class BranchController {
         // Preserve the createdAt field from the existing entity
         branch.setCreatedAt(existingBranch.getCreatedAt());
         branch.setModifiedAt(new Timestamp(System.currentTimeMillis()  / 1000));
-
         branch.setId(id);
+
         branchService.updateBranch(branch);
         return new ResponseEntity<>(branch, HttpStatus.OK);
     }
