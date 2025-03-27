@@ -14,6 +14,8 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 @Configuration
@@ -21,13 +23,29 @@ import java.util.Properties;
 @EnableTransactionManagement
 public class HibernatePersistenceConfiguration {
 
+    private Properties loadCredentials() {
+        Properties properties = new Properties();
+        try (InputStream input = getClass().getClassLoader().getResourceAsStream("db_credentials.txt")) {
+            if (input == null) {
+                throw new IOException("Database credentials file not found");
+            }
+            properties.load(input);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to load database credentials", e);
+        }
+        return properties;
+    }
+
+
     @Bean
     public DataSource dataSource() {
+        Properties credentials = loadCredentials();
+
         BasicDataSource dataSource = new BasicDataSource();
         dataSource.setDriverClassName("org.postgresql.Driver");
-        dataSource.setUrl("SUPER-SECRET-XD");
-        dataSource.setUsername("SUPER-SECRET-XD");
-        dataSource.setPassword("SUPER-SECRET-XD");
+        dataSource.setUrl("jdbc:postgresql://pg-internet-app-headquarters-headquarters-iap.j.aivencloud.com:20665/defaultdb?ssl=require");
+        dataSource.setUsername(credentials.getProperty("username"));
+        dataSource.setPassword(credentials.getProperty("password"));
         return dataSource;
     }
 
