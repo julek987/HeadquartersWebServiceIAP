@@ -1,6 +1,10 @@
 package IAP.model;
 
+
 import jakarta.persistence.*;
+
+
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Entity
@@ -27,10 +31,10 @@ public class Sales {
     private String annotations;
 
     @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
+    private Timestamp createdAt;
 
     @Column(name = "modified_at", nullable = false)
-    private LocalDateTime modifiedAt;
+    private Timestamp modifiedAt;
 
     // Getters and Setters
     public Long getId() {
@@ -81,19 +85,19 @@ public class Sales {
         this.annotations = annotations;
     }
 
-    public LocalDateTime getCreatedAt() {
+    public Timestamp getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
+    public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
     }
 
-    public LocalDateTime getModifiedAt() {
+    public Timestamp getModifiedAt() {
         return modifiedAt;
     }
 
-    public void setModifiedAt(LocalDateTime modifiedAt) {
+    public void setModifiedAt(Timestamp modifiedAt) {
         this.modifiedAt = modifiedAt;
     }
 }

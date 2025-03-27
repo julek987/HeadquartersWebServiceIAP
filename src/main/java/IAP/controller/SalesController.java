@@ -8,6 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 @RestController
@@ -23,13 +24,26 @@ public class SalesController {
 
     @PostMapping
     public ResponseEntity<Sales> addSale(@RequestBody Sales sale) {
+        Timestamp now = new Timestamp(System.currentTimeMillis() / 1000);
+        sale.setCreatedAt(now);
+        sale.setModifiedAt(now);
+
         salesService.addSale(sale);
         return new ResponseEntity<>(sale, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Sales> updateSale(@PathVariable long id, @RequestBody Sales sale) {
+        Sales existingSale = salesService.getSale(id);
+        if (existingSale == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+
+        sale.setCreatedAt(existingSale.getCreatedAt());
+        sale.setModifiedAt(new Timestamp(System.currentTimeMillis()  / 1000));
         sale.setId(id);
+
         salesService.updateSale(sale);
         return new ResponseEntity<>(sale, HttpStatus.OK);
     }

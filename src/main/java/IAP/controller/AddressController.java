@@ -8,6 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 @RestController
@@ -23,13 +24,26 @@ public class AddressController {
 
     @PostMapping
     public ResponseEntity<Address> addAddress(@RequestBody Address address) {
+        Timestamp now = new Timestamp(System.currentTimeMillis() / 1000);
+        address.setCreatedAt(now);
+        address.setModifiedAt(now);
+
         addressService.addAddress(address);
         return new ResponseEntity<>(address, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Address> updateAddress(@PathVariable long id, @RequestBody Address address) {
+        Address existingAddress = addressService.getAddress(id);
+        if (existingAddress == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        // Preserve the createdAt field from the existing entity
+        address.setCreatedAt(existingAddress.getCreatedAt());
+        address.setModifiedAt(new Timestamp(System.currentTimeMillis()  / 1000));
         address.setId(id);
+
         addressService.updateAddress(address);
         return new ResponseEntity<>(address, HttpStatus.OK);
     }

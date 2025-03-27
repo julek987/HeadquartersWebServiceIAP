@@ -8,6 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 @RestController
@@ -23,13 +24,26 @@ public class OrderController {
 
     @PostMapping
     public ResponseEntity<Order> addOrder(@RequestBody Order order) {
+        Timestamp now = new Timestamp(System.currentTimeMillis() / 1000);
+        order.setCreatedAt(now);
+        order.setModifiedAt(now);
+
         orderService.addOrder(order);
         return new ResponseEntity<>(order, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Order> updateOrder(@PathVariable long id, @RequestBody Order order) {
+        Order existingOrder = orderService.getOrder(id);
+        if (existingOrder== null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        // Preserve the createdAt field from the existing entity
+        order.setCreatedAt(existingOrder.getCreatedAt());
+        order.setModifiedAt(new Timestamp(System.currentTimeMillis()  / 1000));
         order.setId(id);
+
         orderService.updateOrder(order);
         return new ResponseEntity<>(order, HttpStatus.OK);
     }
