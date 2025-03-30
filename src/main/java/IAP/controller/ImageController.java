@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +24,11 @@ public class ImageController {
     private final ProductService productService;
 
     @Autowired
-    public ImageController(ImageService imageService, ProductService productService) { this.imageService = imageService;
+    public ImageController(
+            ImageService imageService,
+            ProductService productService
+    ) {
+        this.imageService = imageService;
         this.productService = productService;
     }
 
@@ -57,20 +62,19 @@ public class ImageController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        Timestamp now = new Timestamp(System.currentTimeMillis() / 1000);
 
         Image image = new Image();
         image.setId(imageDTO.id);
         image.setUrl(imageDTO.url);
         image.setProduct(existingProduct);
         image.setShowOrder(imageDTO.showOrder);
-        image.setCreatedAt(now);
-        image.setModifiedAt(now);
+        image.setCreatedAt(LocalDateTime.now());
+        image.setModifiedAt(LocalDateTime.now());
 
         imageService.addImage(image);
 
-        imageDTO = new ImageDTO(image);
-        return new ResponseEntity<>(imageDTO, HttpStatus.CREATED);
+        ImageDTO newImageDTO = new ImageDTO(image);
+        return new ResponseEntity<>(newImageDTO, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
@@ -88,17 +92,16 @@ public class ImageController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        Timestamp now = new Timestamp(System.currentTimeMillis() / 1000);
 
         existingImage.setUrl(imageDTO.url);
         existingImage.setProduct(existingProduct);
         existingImage.setShowOrder(imageDTO.showOrder);
-        existingImage.setModifiedAt(now);
+        existingImage.setModifiedAt(LocalDateTime.now());
 
         imageService.updateImage(existingImage);
 
-        imageDTO = new ImageDTO(existingImage);
-        return new ResponseEntity<>(imageDTO, HttpStatus.OK);
+        ImageDTO updatedImageDTO = new ImageDTO(existingImage);
+        return new ResponseEntity<>(updatedImageDTO, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

@@ -1,4 +1,4 @@
-package IAP.model;
+package IAP.model.objects;
 
 import java.util.HashMap;
 import java.util.Map;

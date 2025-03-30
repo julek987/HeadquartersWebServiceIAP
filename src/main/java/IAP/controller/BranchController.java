@@ -71,15 +71,15 @@ public class BranchController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        Timestamp now = new Timestamp(System.currentTimeMillis() / 1000);
+
         Branch newBranch = new  Branch();
 
         newBranch.setActive(branchDTO.active);
         newBranch.setName(branchDTO.name);
         newBranch.setAddress(existingAddress);
         newBranch.setManager(existingManager);
-        newBranch.setCreatedAt(now);
-        newBranch.setModifiedAt(now);
+        newBranch.setCreatedAt(LocalDateTime.now());
+        newBranch.setModifiedAt(LocalDateTime.now());
 
         branchService.addBranch(newBranch);
         BranchDTO savedBranchDTO = new BranchDTO(newBranch);
@@ -106,13 +106,12 @@ public class BranchController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        Timestamp now = new Timestamp(System.currentTimeMillis() / 1000);
 
         existingBranch.setActive(branchDTO.active);
         existingBranch.setName(branchDTO.name);
         existingBranch.setAddress(existingAddress);
         existingBranch.setManager(existingManager);
-        existingBranch.setModifiedAt(now);
+        existingBranch.setModifiedAt(LocalDateTime.now());
 
         branchService.updateBranch(existingBranch);
         BranchDTO updatedBranchDTO = new BranchDTO(existingBranch);

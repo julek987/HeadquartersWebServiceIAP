@@ -3,6 +3,7 @@ package IAP.model;
 import jakarta.persistence.*;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "images")
@@ -22,10 +23,10 @@ public class Image {
     private int showOrder;
 
     @Column(name = "created_at", nullable = false)
-    private Timestamp createdAt;
+    private LocalDateTime createdAt;
 
     @Column(name = "modified_at", nullable = false)
-    private Timestamp modifiedAt;
+    private LocalDateTime modifiedAt;
 
 
 
@@ -41,10 +42,10 @@ public class Image {
     public int getShowOrder() { return showOrder; }
     public void setShowOrder(int showOrder) { this.showOrder = showOrder; }
 
-    public Timestamp getCreatedAt() { return createdAt; }
-    public void setCreatedAt(Timestamp createdAt) { this.createdAt = createdAt; }
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 
-    public Timestamp getModifiedAt() { return modifiedAt; }
-    public void setModifiedAt(Timestamp modifiedAt) { this.modifiedAt = modifiedAt; }
+    public LocalDateTime getModifiedAt() { return modifiedAt; }
+    public void setModifiedAt(LocalDateTime modifiedAt) { this.modifiedAt = modifiedAt; }
 
 }

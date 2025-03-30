@@ -3,6 +3,7 @@ package IAP.model;
 import jakarta.persistence.*;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -35,13 +36,13 @@ public class Product {
 
 
     @Column(name = "created_at", nullable = false)
-    private Timestamp createdAt;
+    private LocalDateTime createdAt;
 
     @Column(name = "modified_at", nullable = false)
-    private Timestamp modifiedAt;
+    private LocalDateTime modifiedAt;
 
     @Column(name = "archived_at", nullable = true)
-    private Timestamp archivedAt;
+    private LocalDateTime archivedAt;
 
 
     // mapped
@@ -71,14 +72,14 @@ public class Product {
     public int getHeight() {return height;}
     public void setHeight(int height) {this.height = height;}
 
-    public Timestamp getCreatedAt() {return createdAt;}
-    public void setCreatedAt(Timestamp createdAt) {this.createdAt = createdAt;}
+    public LocalDateTime getCreatedAt() {return createdAt;}
+    public void setCreatedAt(LocalDateTime createdAt) {this.createdAt = createdAt;}
 
-    public Timestamp getModifiedAt() {return modifiedAt;}
-    public void setModifiedAt(Timestamp modifiedAt) {this.modifiedAt = modifiedAt;}
+    public LocalDateTime getModifiedAt() {return modifiedAt;}
+    public void setModifiedAt(LocalDateTime modifiedAt) {this.modifiedAt = modifiedAt;}
 
-    public Timestamp getArchivedAt() {return archivedAt;}
-    public void setArchivedAt(Timestamp archivedAt) {this.archivedAt = archivedAt;}
+    public LocalDateTime getArchivedAt() {return archivedAt;}
+    public void setArchivedAt(LocalDateTime archivedAt) {this.archivedAt = archivedAt;}
 
     public AppUser getAddedBy() {return addedBy;}
     public void setAddedBy(AppUser addedBy) {this.addedBy = addedBy;}

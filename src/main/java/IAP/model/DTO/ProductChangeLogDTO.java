@@ -1,9 +1,10 @@
 package IAP.model.DTO;
 
 import IAP.model.ProductChangeLog;
-import IAP.model.ProductChanges;
+import IAP.model.objects.ProductChanges;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 public class ProductChangeLogDTO {
     public long             id;
@@ -11,7 +12,7 @@ public class ProductChangeLogDTO {
     public long             changedById;
     public String           changeReason;
     public ProductChanges   changes;
-    public Timestamp        createdAt;
+    public LocalDateTime    createdAt;
 
     public ProductChangeLogDTO() {}
 

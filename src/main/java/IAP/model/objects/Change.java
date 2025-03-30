@@ -1,4 +1,4 @@
-package IAP.model;
+package IAP.model.objects;
 
 public class Change<T> {
     private T before;

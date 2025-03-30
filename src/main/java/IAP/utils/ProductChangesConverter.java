@@ -1,6 +1,6 @@
 package IAP.utils;
 
-import IAP.model.ProductChanges;
+import IAP.model.objects.ProductChanges;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.AttributeConverter;

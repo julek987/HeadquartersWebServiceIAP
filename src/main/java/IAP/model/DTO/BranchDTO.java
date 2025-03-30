@@ -3,16 +3,17 @@ package IAP.model.DTO;
 import IAP.model.Branch;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 public class BranchDTO {
 
-    public long         id;
-    public boolean      active;
-    public String       name;
-    public long         addressId;
-    public long         managerId;
-    public Timestamp    createdAt;
-    public Timestamp    modifiedAt;
+    public long             id;
+    public boolean          active;
+    public String           name;
+    public long             addressId;
+    public long             managerId;
+    public LocalDateTime    createdAt;
+    public LocalDateTime    modifiedAt;
 
     public BranchDTO() {}
 

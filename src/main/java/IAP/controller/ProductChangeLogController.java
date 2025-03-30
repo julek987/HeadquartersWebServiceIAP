@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,14 +68,13 @@ public class ProductChangeLogController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        Timestamp now = new Timestamp(System.currentTimeMillis() / 1000);
 
         ProductChangeLog productChangeLog = new ProductChangeLog();
         productChangeLog.setProduct(existingProduct);
         productChangeLog.setChangedBy(existingAppUser);
         productChangeLog.setChangeReason(productChangeLogDTO.changeReason);
         productChangeLog.setChanges(productChangeLogDTO.changes);
-        productChangeLog.setCreatedAt(now);
+        productChangeLog.setCreatedAt(LocalDateTime.now());
 
         productChangeLogService.addProductChangeLog(productChangeLog);
         ProductChangeLogDTO newProductChangeLogDTO = new ProductChangeLogDTO(productChangeLog);

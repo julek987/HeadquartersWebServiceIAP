@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,15 +54,14 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<Product> addProduct(
+    public ResponseEntity<ProductDTO> addProduct(
             @RequestBody ProductDTO productDTO
     ) {
-        AppUser addedBy = appUserService.getAppUser(productDTO.addedBy);
+        AppUser addedBy = appUserService.getAppUser(productDTO.addedById);
         if (addedBy == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        Timestamp now = new Timestamp(System.currentTimeMillis() / 1000);
 
         Product product = new Product();
         product.setProductName(productDTO.productName);
@@ -70,12 +70,13 @@ public class ProductController {
         product.setDepth(productDTO.depth);
         product.setHeight(productDTO.height);
         product.setAddedBy(addedBy);
-        product.setCreatedAt(now);
-        product.setModifiedAt(now);
+        product.setCreatedAt(LocalDateTime.now());
+        product.setModifiedAt(LocalDateTime.now());
 
 
         productService.addProduct(product);
-        return new ResponseEntity<>(product, HttpStatus.OK);
+        ProductDTO addedProductDTO = new ProductDTO(product);
+        return new ResponseEntity<>(addedProductDTO, HttpStatus.OK);
     }
 
     @PutMapping("{id}")
@@ -93,7 +94,7 @@ public class ProductController {
         existingProduct.setWidth(productDTO.width);
         existingProduct.setDepth(productDTO.depth);
         existingProduct.setHeight(productDTO.height);
-        existingProduct.setModifiedAt(new Timestamp(System.currentTimeMillis() / 1000));
+        existingProduct.setModifiedAt(LocalDateTime.now());
 
         productService.updateProduct(existingProduct);
 

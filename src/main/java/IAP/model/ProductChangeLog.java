@@ -1,10 +1,12 @@
 package IAP.model;
 
+import IAP.model.objects.ProductChanges;
 import IAP.utils.ProductChangesConverter;
 import jakarta.persistence.*;
 
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "product_change_logs")
@@ -30,7 +32,7 @@ public class ProductChangeLog {
     private ProductChanges changes;
 
     @Column(name = "created_at", nullable = false)
-    private Timestamp createdAt;
+    private LocalDateTime createdAt;
 
 
     // getters and setters :)
@@ -50,7 +52,7 @@ public class ProductChangeLog {
     public ProductChanges getChanges() { return changes; }
     public void setChanges(ProductChanges changes) { this.changes = changes; }
 
-    public Timestamp getCreatedAt() { return createdAt; }
-    public void setCreatedAt(Timestamp createdAt) { this.createdAt = createdAt; }
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 
 }
