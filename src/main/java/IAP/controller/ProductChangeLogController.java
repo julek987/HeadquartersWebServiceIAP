@@ -24,7 +24,7 @@ public class ProductChangeLogController {
 
     private final ProductService productService;
     private final AppUserService appUserService;
-    private ProductChangeLogService productChangeLogService;
+    private final ProductChangeLogService productChangeLogService;
 
     @Autowired
     public ProductChangeLogController(ProductChangeLogService productChangeLogService, ProductService productService, AppUserService appUserService) {
@@ -78,7 +78,7 @@ public class ProductChangeLogController {
 
         productChangeLogService.addProductChangeLog(productChangeLog);
         ProductChangeLogDTO newProductChangeLogDTO = new ProductChangeLogDTO(productChangeLog);
-        return new ResponseEntity<>(newProductChangeLogDTO, HttpStatus.OK);
+        return new ResponseEntity<>(newProductChangeLogDTO, HttpStatus.CREATED);
     }
 
 }

@@ -115,7 +115,7 @@ public class BranchController {
 
         branchService.updateBranch(existingBranch);
         BranchDTO updatedBranchDTO = new BranchDTO(existingBranch);
-        return new ResponseEntity<>(updatedBranchDTO, HttpStatus.CREATED);
+        return new ResponseEntity<>(updatedBranchDTO, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

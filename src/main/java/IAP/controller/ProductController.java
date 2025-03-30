@@ -76,7 +76,7 @@ public class ProductController {
 
         productService.addProduct(product);
         ProductDTO addedProductDTO = new ProductDTO(product);
-        return new ResponseEntity<>(addedProductDTO, HttpStatus.OK);
+        return new ResponseEntity<>(addedProductDTO, HttpStatus.CREATED);
     }
 
     @PutMapping("{id}")
