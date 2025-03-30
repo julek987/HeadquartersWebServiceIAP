@@ -3,6 +3,8 @@ package IAP.model;
 import jakarta.persistence.*;
 
 import java.sql.Timestamp;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "products")
@@ -27,6 +29,9 @@ public class Product {
     @Column(name = "height",  nullable = true)
     private int height;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "added_by", nullable = false)
+    private AppUser addedBy;
 
 
     @Column(name = "created_at", nullable = false)
@@ -38,7 +43,15 @@ public class Product {
     @Column(name = "archived_at", nullable = true)
     private Timestamp archivedAt;
 
-    public Product() {}
+
+    // mapped
+    @OneToMany(mappedBy = "product")
+    private Set<ProductChangeLog>  productChangeLogs = new HashSet<ProductChangeLog>(0);
+
+    @OneToMany(mappedBy = "product")
+    private Set<Image> listImage = new HashSet<>(0);
+
+
 
     public long getId() {return id;}
     public void setId(long id) {this.id = id;}
@@ -66,4 +79,16 @@ public class Product {
 
     public Timestamp getArchivedAt() {return archivedAt;}
     public void setArchivedAt(Timestamp archivedAt) {this.archivedAt = archivedAt;}
+
+    public AppUser getAddedBy() {return addedBy;}
+    public void setAddedBy(AppUser addedBy) {this.addedBy = addedBy;}
+
+
+    //
+    public Set<ProductChangeLog> getProductChangeLogs() {return productChangeLogs;}
+    public void setProductChangeLogs(Set<ProductChangeLog> productChangeLogs) {this.productChangeLogs = productChangeLogs;}
+
+    public Set<Image> getListImage() {return listImage;}
+    public void setListImage(Set<Image> listImage) {this.listImage = listImage;}
+
 }

@@ -12,8 +12,8 @@ public class Image {
     @Column(name = "id")
     private long id;
 
-    @Column(name = "product_id",  nullable = false)
-    private long productId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Product product;
 
     @Column(name = "url",  nullable = false)
     private String url;
@@ -27,13 +27,13 @@ public class Image {
     @Column(name = "modified_at", nullable = false)
     private Timestamp modifiedAt;
 
-    public Image() {}
+
 
     public long getId() { return id; }
     public void setId(long id) { this.id = id; }
 
-    public long getProductId() { return productId; }
-    public void setProductId(long productId) { this.productId = productId; }
+    public Product getProduct() { return product; }
+    public void setProduct(Product product) { this.product = product; }
 
     public String getUrl() { return url; }
     public void setUrl(String url) { this.url = url; }
@@ -46,4 +46,5 @@ public class Image {
 
     public Timestamp getModifiedAt() { return modifiedAt; }
     public void setModifiedAt(Timestamp modifiedAt) { this.modifiedAt = modifiedAt; }
+
 }

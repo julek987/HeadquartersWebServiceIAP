@@ -2,6 +2,8 @@ package IAP.model;
 
 import jakarta.persistence.*;
 import java.sql.Timestamp;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "appuser")
@@ -53,6 +55,19 @@ public class AppUser {
 
     @Column(name = "modified_at", nullable = false)
     private Timestamp modifiedAt;
+
+
+    // mapped
+//    @OneToMany(mappedBy = "addedBy", cascade = CascadeType.ALL)
+//    private Set<Product> addedProducts = new HashSet<>(0);
+
+//    @OneToOne(mappedBy = "manager",  cascade = CascadeType.ALL)
+//    private Branch managedBranch;
+
+//    @OneToMany(mappedBy = "changedBy")
+//    private Set<ProductChangeLog> changedProductsLogs = new HashSet<>(0);
+
+
 
     public AppUser() {}
 
@@ -176,4 +191,19 @@ public class AppUser {
     public void setModifiedAt(Timestamp modifiedAt) {
         this.modifiedAt = modifiedAt;
     }
+
+
+
+//    public Set<Product> getListProductAddedByAppUser() {return addedProducts;}
+//
+//    public void setListProductAddedByAppUser(Set<Product> addedProducts) {this.addedProducts = addedProducts;}
+//
+//    public Branch getManagedBranch() {return managedBranch;}
+//
+//    public void setManagedBranch(Branch managedBranch) {this.managedBranch = managedBranch;}
+//
+//    public Set<ProductChangeLog> getChangedProductsLogs() {return changedProductsLogs;}
+//
+//    public void setChangedProductsLogs(Set<ProductChangeLog> changedProductsLogs) {this.changedProductsLogs = changedProductsLogs;}
+
 }
