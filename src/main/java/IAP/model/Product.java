@@ -34,7 +34,6 @@ public class Product {
     @JoinColumn(name = "added_by", nullable = false)
     private AppUser addedBy;
 
-
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 

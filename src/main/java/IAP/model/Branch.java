@@ -20,11 +20,11 @@ public class Branch {
     @Column(name = "name",  nullable = false)
     private String name;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "address_id", nullable = false)
+    @OneToOne
+    @JoinColumn(nullable = false)
     private Address address;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "manager_id", nullable = false)
     private AppUser manager;
 
