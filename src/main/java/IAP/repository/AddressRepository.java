@@ -1,12 +1,13 @@
 package IAP.repository;
 
 import IAP.model.Address;
-import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import jakarta.transaction.Transactional;
+import java.util.Optional;
 
-@Transactional
 @Repository
+@Transactional
 public interface AddressRepository extends JpaRepository<Address, Long> {
-    Address findById(long id);
+    Optional<Address> findById(long id);
 }

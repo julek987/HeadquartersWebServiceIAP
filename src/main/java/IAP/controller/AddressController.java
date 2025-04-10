@@ -1,21 +1,24 @@
 package IAP.controller;
 
+import IAP.exception.InvalidDataException;
+import IAP.exception.ResourceNotFoundException;
 import IAP.model.Address;
 import IAP.model.Branch;
 import IAP.model.DTO.AddressDTO;
 import IAP.service.AddressService;
 import IAP.service.BranchService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/address")
+@RequestMapping("/api/addresses")
 public class AddressController {
 
     private final AddressService addressService;
@@ -28,82 +31,83 @@ public class AddressController {
     }
 
     @PostMapping
-    public ResponseEntity<AddressDTO> addAddress(@RequestBody AddressDTO addressDTO) {
+    public ResponseEntity<?> addAddress(@Valid @RequestBody AddressDTO addressDTO) {
+        try {
+            Address newAddress = new Address();
+            newAddress.setBranch(branchService.getBranch(addressDTO.branchId));
+            newAddress.setBranchUserId(addressDTO.branchUserId);
+            newAddress.setCountry(addressDTO.country);
+            newAddress.setRegion(addressDTO.region);
+            newAddress.setCity(addressDTO.city);
+            newAddress.setPostalCode(addressDTO.postalCode);
+            newAddress.setStreet(addressDTO.street);
+            newAddress.setAddressLine1(addressDTO.addressLine1);
+            newAddress.setAddressLine2(addressDTO.addressLine2);
+            newAddress.setCreatedAt(LocalDateTime.now());
+            newAddress.setModifiedAt(LocalDateTime.now());
 
-        Branch existingBranch = branchService.getBranch(addressDTO.branchId);
-        if (existingBranch == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            addressService.addAddress(newAddress);
+            AddressDTO savedAddressDTO = new AddressDTO(newAddress);
+            return new ResponseEntity<>(savedAddressDTO, HttpStatus.CREATED);
+        } catch (InvalidDataException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
-
-        Address newAddress = new Address();
-        newAddress.setBranch(existingBranch);
-        newAddress.setBranchUserId(addressDTO.branchUserId);
-        newAddress.setCity(addressDTO.city);
-        newAddress.setCountry(addressDTO.country);
-        newAddress.setRegion(addressDTO.region);
-        newAddress.setPostalCode(addressDTO.postalCode);
-        newAddress.setStreet(addressDTO.street);
-        newAddress.setAddressLine1(addressDTO.addressLine1);
-        newAddress.setAddressLine2(addressDTO.addressLine2);
-        newAddress.setCreatedAt(LocalDateTime.now());
-        newAddress.setModifiedAt(LocalDateTime.now());
-
-        addressService.addAddress(newAddress);
-        AddressDTO savedAddressDTO = new AddressDTO(newAddress);
-        return new ResponseEntity<>(savedAddressDTO, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AddressDTO> updateAddress(@PathVariable long id, @RequestBody AddressDTO addressDTO) {
-        Address existingAddress = addressService.getAddress(id);
-        if (existingAddress == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<?> updateAddress(@PathVariable long id, @Valid @RequestBody AddressDTO addressDTO) {
+        try {
+            Address existingAddress = addressService.getAddress(id);
+            existingAddress.setId(id);
+            existingAddress.setBranch(branchService.getBranch(addressDTO.branchId));
+            existingAddress.setBranchUserId(addressDTO.branchUserId);
+            existingAddress.setCountry(addressDTO.country);
+            existingAddress.setRegion(addressDTO.region);
+            existingAddress.setCity(addressDTO.city);
+            existingAddress.setPostalCode(addressDTO.postalCode);
+            existingAddress.setStreet(addressDTO.street);
+            existingAddress.setAddressLine1(addressDTO.addressLine1);
+            existingAddress.setAddressLine2(addressDTO.addressLine2);
+            existingAddress.setModifiedAt(LocalDateTime.now());
+
+            addressService.addAddress(existingAddress);
+            AddressDTO savedAddressDTO = new AddressDTO(existingAddress);
+            return new ResponseEntity<>(savedAddressDTO, HttpStatus.CREATED);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (InvalidDataException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
-
-        Branch existingBranch = branchService.getBranch(addressDTO.branchId);
-        if (existingBranch == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        existingAddress.setBranch(existingBranch);
-        existingAddress.setBranchUserId(addressDTO.branchUserId);
-        existingAddress.setCity(addressDTO.city);
-        existingAddress.setCountry(addressDTO.country);
-        existingAddress.setRegion(addressDTO.region);
-        existingAddress.setPostalCode(addressDTO.postalCode);
-        existingAddress.setStreet(addressDTO.street);
-        existingAddress.setAddressLine1(addressDTO.addressLine1);
-        existingAddress.setAddressLine2(addressDTO.addressLine2);
-        existingAddress.setModifiedAt(LocalDateTime.now());
-
-        addressService.updateAddress(existingAddress);
-        AddressDTO updatedAddressDTO = new AddressDTO(existingAddress);
-        return new ResponseEntity<>(updatedAddressDTO, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteAddress(@PathVariable long id) {
-        addressService.deleteAddress(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public ResponseEntity<?> deleteAddress(@PathVariable long id) {
+        try {
+            addressService.deleteAddress(id);
+            return ResponseEntity.noContent().build();
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping
     public ResponseEntity<List<AddressDTO>> listAddresses() {
-        List<Address> addresses = addressService.listAddress();
-        List<AddressDTO> addressDTOs = addresses.stream()
+        List<Address> addresses = addressService.listAddresses();
+        List<AddressDTO> dtos = addresses.stream()
                 .map(AddressDTO::new)
-                .toList();
-
-        return new ResponseEntity<>(addressDTOs, HttpStatus.OK);
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(dtos);
     }
 
-    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AddressDTO> getAddress(@PathVariable long id) {
-        Address address = addressService.getAddress(id);
-        if (address != null) {
-            return new ResponseEntity<>(new AddressDTO(address), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getAddress(@PathVariable long id) {
+        try {
+            Address address = addressService.getAddress(id);
+            return ResponseEntity.ok(new AddressDTO(address));
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 }
