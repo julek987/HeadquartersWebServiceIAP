@@ -2,7 +2,7 @@ package IAP.model.DTO;
 
 import IAP.model.AppUser;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 public class AppUserDTO {
 
@@ -11,16 +11,16 @@ public class AppUserDTO {
     private long branchUserId;
     private long addressId;
     private boolean active;
-    private String firstName;
+    public String firstName;
     private String middleName;
-    private String lastName;
-    private String email;
-    private String phoneNumber;
+    public String lastName;
+    public String email;
+    public String phoneNumber;
     private int role;
-    private String login;
-    private String password;
-    private Timestamp createdAt;
-    private Timestamp modifiedAt;
+    public String login;
+    public String password;
+    private LocalDateTime createdAt;
+    private LocalDateTime modifiedAt;
 
     public AppUserDTO() {}
 
