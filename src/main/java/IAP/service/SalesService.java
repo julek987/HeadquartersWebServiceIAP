@@ -1,12 +1,12 @@
 package IAP.service;
 
-import IAP.model.Sales;
+import IAP.model.Sale;
 import java.util.List;
 
 public interface SalesService {
-    void addSale(Sales sale);
-    void updateSale(Sales sale);
+    void addSale(Sale sale);
+    void updateSale(Sale sale);
     void deleteSale(long id);
-    List<Sales> listSales();
-    Sales getSale(long id);
+    List<Sale> listSales();
+    Sale getSale(long id);
 }

@@ -14,14 +14,17 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "branch_id", nullable = false)
-    private Long branchId;
+    @ManyToOne
+    @JoinColumn(name = "branch_id", nullable = false)
+    private Branch branch;
 
-    @Column(name = "sale_id", nullable = false)
-    private Long saleId;
+    @ManyToOne
+    @JoinColumn(name = "sale_id", nullable = false)
+    private Sale sale;
 
-    @Column(name = "product_id", nullable = false)
-    private Integer productId;
+    @ManyToOne
+    @JoinColumn(name = "product_id", nullable = false)
+    private Product product;
 
     @Column(name = "quantity_sold", nullable = false)
     private Integer quantitySold;
@@ -44,33 +47,19 @@ public class Order {
         this.id = id;
     }
 
-    public Long getBranchId() {
-        return branchId;
-    }
+    public Branch getBranch() {return branch;}
 
-    public void setBranchId(Long branchId) {
-        this.branchId = branchId;
-    }
+    public void setBranch(Branch branch) {this.branch = branch;}
 
-    public Long getSaleId() {
-        return saleId;
-    }
+    public Product getProduct() {return product;}
 
-    public void setSaleId(Long saleId) {
-        this.saleId = saleId;
-    }
+    public void setProduct(Product product) {this.product = product;}
 
-    public Integer getProductId() {
-        return productId;
-    }
+    public Sale getSale() {return sale;}
 
-    public void setProductId(Integer productId) {
-        this.productId = productId;
-    }
+    public void setSale(Sale sale) {this.sale = sale;}
 
-    public Integer getQuantitySold() {
-        return quantitySold;
-    }
+    public Integer getQuantitySold() {return quantitySold;}
 
     public void setQuantitySold(Integer quantitySold) {
         this.quantitySold = quantitySold;

@@ -1,6 +1,6 @@
 package IAP.service;
 
-import IAP.model.Sales;
+import IAP.model.Sale;
 import IAP.repository.SalesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,12 +17,12 @@ public class SalesServiceImpl implements SalesService {
     }
 
     @Override
-    public void addSale(Sales sale) {
+    public void addSale(Sale sale) {
         salesRepository.save(sale);
     }
 
     @Override
-    public void updateSale(Sales sale) {
+    public void updateSale(Sale sale) {
         salesRepository.save(sale);
     }
 
@@ -32,12 +32,12 @@ public class SalesServiceImpl implements SalesService {
     }
 
     @Override
-    public List<Sales> listSales() {
+    public List<Sale> listSales() {
         return salesRepository.findAll();
     }
 
     @Override
-    public Sales getSale(long id) {
+    public Sale getSale(long id) {
         return salesRepository.findById(id);
     }
 }

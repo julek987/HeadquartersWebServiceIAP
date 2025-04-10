@@ -1,6 +1,6 @@
 package IAP.controller;
 
-import IAP.model.Sales;
+import IAP.model.Sale;
 import IAP.service.SalesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,7 +23,7 @@ public class SalesController {
     }
 
     @PostMapping
-    public ResponseEntity<Sales> addSale(@RequestBody Sales sale) {
+    public ResponseEntity<Sale> addSale(@RequestBody Sale sale) {
         Timestamp now = new Timestamp(System.currentTimeMillis() / 1000);
         sale.setCreatedAt(now);
         sale.setModifiedAt(now);
@@ -33,8 +33,8 @@ public class SalesController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Sales> updateSale(@PathVariable long id, @RequestBody Sales sale) {
-        Sales existingSale = salesService.getSale(id);
+    public ResponseEntity<Sale> updateSale(@PathVariable long id, @RequestBody Sale sale) {
+        Sale existingSale = salesService.getSale(id);
         if (existingSale == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -55,14 +55,14 @@ public class SalesController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Sales>> listSales() {
-        List<Sales> sales = salesService.listSales();
+    public ResponseEntity<List<Sale>> listSales() {
+        List<Sale> sales = salesService.listSales();
         return new ResponseEntity<>(sales, HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Sales> getSale(@PathVariable long id) {
-        Sales sale = salesService.getSale(id);
+    public ResponseEntity<Sale> getSale(@PathVariable long id) {
+        Sale sale = salesService.getSale(id);
         if (sale != null) {
             return new ResponseEntity<>(sale, HttpStatus.OK);
         } else {

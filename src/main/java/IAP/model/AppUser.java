@@ -9,11 +9,12 @@ public class AppUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "user_id")
     private long id;
 
-    @Column(name = "branch_id", nullable = false)
-    private long branchId;
+    @ManyToOne
+    @JoinColumn(name = "branch_id", nullable = false)
+    private Branch branch;
 
     @Column(name = "branch_user_id", nullable = false)
     private long branchUserId;
@@ -36,8 +37,9 @@ public class AppUser {
     @Column(name = "phone_number")
     private String phoneNumber;
 
-    @Column(name = "address", nullable = false)
-    private long address;
+    @ManyToOne
+    @JoinColumn(name = "address_id", nullable = false)
+    private Address address;
 
     @Column(name = "role", nullable = false)
     private int role;
@@ -63,14 +65,6 @@ public class AppUser {
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public long getBranchId() {
-        return branchId;
-    }
-
-    public void setBranchId(long branchId) {
-        this.branchId = branchId;
     }
 
     public long getBranchUserId() {
@@ -129,13 +123,13 @@ public class AppUser {
         this.phoneNumber = phoneNumber;
     }
 
-    public long getAddress() {
-        return address;
-    }
+    public Address getAddress() {return address;}
 
-    public void setAddress(long address) {
-        this.address = address;
-    }
+    public void setAddress(Address address) {this.address = address;}
+
+    public Branch getBranch() {return branch;}
+
+    public void setBranch(Branch branch) {this.branch = branch;}
 
     public int getRole() {
         return role;

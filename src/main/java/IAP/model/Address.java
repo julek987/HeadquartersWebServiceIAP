@@ -9,11 +9,13 @@ public class Address {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "address_id")
     private long id;
 
-    @Column(name = "branch_id", nullable = false)
-    private long branchId;
+    @OneToOne
+    @JoinColumn(nullable = false)
+    private Branch branch;
+    //TODO verification (Same addresses can have different IDs, no need for relation)
 
     @Column(name = "branch_user_id", nullable = false)
     private long branchUserId;
@@ -55,12 +57,12 @@ public class Address {
         this.id = id;
     }
 
-    public long getBranchId() {
-        return branchId;
+    public Branch getBranch() {
+        return branch;
     }
 
-    public void setBranchId(long branchId) {
-        this.branchId = branchId;
+    public void setBranch(Branch branch) {
+        this.branch = branch;
     }
 
     public long getBranchUserId() {
