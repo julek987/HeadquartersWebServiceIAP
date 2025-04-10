@@ -1,27 +1,23 @@
 package IAP.model.DTO;
 
 import IAP.model.Address;
-import IAP.model.Branch;
-import jakarta.persistence.Column;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 public class AddressDTO {
 
-    private long id;
-    private long branchId;
-    private long branchUserId;
-    private String country;
-    private String region;
-    private String city;
-    private String postalCode;
-    private String street;
-    private String addressLine1;
-    private String addressLine2;
-    private Timestamp createdAt;
-    private Timestamp modifiedAt;
+    public long id;
+    public long branchId;
+    public long branchUserId;
+    public String country;
+    public String region;
+    public String city;
+    public String postalCode;
+    public String street;
+    public String addressLine1;
+    public String addressLine2;
+    public LocalDateTime createdAt;
+    public LocalDateTime modifiedAt;
 
     public AddressDTO() {}
 

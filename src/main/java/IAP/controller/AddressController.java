@@ -1,14 +1,17 @@
 package IAP.controller;
 
 import IAP.model.Address;
+import IAP.model.Branch;
+import IAP.model.DTO.AddressDTO;
 import IAP.service.AddressService;
+import IAP.service.BranchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -16,36 +19,66 @@ import java.util.List;
 public class AddressController {
 
     private final AddressService addressService;
+    private final BranchService branchService;
 
     @Autowired
-    public AddressController(AddressService addressService) {
+    public AddressController(AddressService addressService, BranchService branchService) {
         this.addressService = addressService;
+        this.branchService = branchService;
     }
 
     @PostMapping
-    public ResponseEntity<Address> addAddress(@RequestBody Address address) {
-        Timestamp now = new Timestamp(System.currentTimeMillis() / 1000);
-        address.setCreatedAt(now);
-        address.setModifiedAt(now);
+    public ResponseEntity<AddressDTO> addAddress(@RequestBody AddressDTO addressDTO) {
 
-        addressService.addAddress(address);
-        return new ResponseEntity<>(address, HttpStatus.CREATED);
+        Branch existingBranch = branchService.getBranch(addressDTO.branchId);
+        if (existingBranch == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        Address newAddress = new Address();
+        newAddress.setBranch(existingBranch);
+        newAddress.setBranchUserId(addressDTO.branchUserId);
+        newAddress.setCity(addressDTO.city);
+        newAddress.setCountry(addressDTO.country);
+        newAddress.setRegion(addressDTO.region);
+        newAddress.setPostalCode(addressDTO.postalCode);
+        newAddress.setStreet(addressDTO.street);
+        newAddress.setAddressLine1(addressDTO.addressLine1);
+        newAddress.setAddressLine2(addressDTO.addressLine2);
+        newAddress.setCreatedAt(LocalDateTime.now());
+        newAddress.setModifiedAt(LocalDateTime.now());
+
+        addressService.addAddress(newAddress);
+        AddressDTO savedAddressDTO = new AddressDTO(newAddress);
+        return new ResponseEntity<>(savedAddressDTO, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Address> updateAddress(@PathVariable long id, @RequestBody Address address) {
+    public ResponseEntity<AddressDTO> updateAddress(@PathVariable long id, @RequestBody AddressDTO addressDTO) {
         Address existingAddress = addressService.getAddress(id);
         if (existingAddress == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        // Preserve the createdAt field from the existing entity
-        address.setCreatedAt(existingAddress.getCreatedAt());
-        address.setModifiedAt(new Timestamp(System.currentTimeMillis()  / 1000));
-        address.setId(id);
+        Branch existingBranch = branchService.getBranch(addressDTO.branchId);
+        if (existingBranch == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
 
-        addressService.updateAddress(address);
-        return new ResponseEntity<>(address, HttpStatus.OK);
+        existingAddress.setBranch(existingBranch);
+        existingAddress.setBranchUserId(addressDTO.branchUserId);
+        existingAddress.setCity(addressDTO.city);
+        existingAddress.setCountry(addressDTO.country);
+        existingAddress.setRegion(addressDTO.region);
+        existingAddress.setPostalCode(addressDTO.postalCode);
+        existingAddress.setStreet(addressDTO.street);
+        existingAddress.setAddressLine1(addressDTO.addressLine1);
+        existingAddress.setAddressLine2(addressDTO.addressLine2);
+        existingAddress.setModifiedAt(LocalDateTime.now());
+
+        addressService.updateAddress(existingAddress);
+        AddressDTO updatedAddressDTO = new AddressDTO(existingAddress);
+        return new ResponseEntity<>(updatedAddressDTO, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
@@ -55,16 +88,20 @@ public class AddressController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Address>> listAddresses() {
+    public ResponseEntity<List<AddressDTO>> listAddresses() {
         List<Address> addresses = addressService.listAddress();
-        return new ResponseEntity<>(addresses, HttpStatus.OK);
+        List<AddressDTO> addressDTOs = addresses.stream()
+                .map(AddressDTO::new)
+                .toList();
+
+        return new ResponseEntity<>(addressDTOs, HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Address> getAddress(@PathVariable long id) {
+    public ResponseEntity<AddressDTO> getAddress(@PathVariable long id) {
         Address address = addressService.getAddress(id);
         if (address != null) {
-            return new ResponseEntity<>(address, HttpStatus.OK);
+            return new ResponseEntity<>(new AddressDTO(address), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
