@@ -8,11 +8,11 @@ import java.sql.Timestamp;
 public class OrderDTO {
 
     public Long id;
-    private Long branchId;
-    private Long SaleId;
-    private Long productId;
-    private Integer quantitySold;
-    private BigDecimal salePrice;
+    public Long branchId;
+    public Long SaleId;
+    public Long productId;
+    public Integer quantitySold;
+    public BigDecimal salePrice;
     private Timestamp createdAt;
     private Timestamp modifiedAt;
 

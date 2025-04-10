@@ -7,12 +7,12 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class SalesServiceImpl implements SalesService {
+public class SaleServiceImpl implements SaleService {
 
     private final SalesRepository salesRepository;
 
     @Autowired
-    public SalesServiceImpl(SalesRepository salesRepository) {
+    public SaleServiceImpl(SalesRepository salesRepository) {
         this.salesRepository = salesRepository;
     }
 
