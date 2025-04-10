@@ -1,21 +1,20 @@
 package IAP.controller;
 
-import IAP.model.Branch;
-import IAP.model.AppUser;
-import IAP.model.Sale;
+import IAP.exception.InvalidDataException;
+import IAP.exception.ResourceNotFoundException;
+import IAP.model.*;
+import IAP.model.DTO.AppUserDTO;
 import IAP.model.DTO.SaleDTO;
-import IAP.service.SaleService;
-import IAP.service.BranchService;
-import IAP.service.AppUserService;
+import IAP.service.*;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/sales")
@@ -35,74 +34,78 @@ public class SaleController {
     }
 
     @PostMapping
-    public ResponseEntity<SaleDTO> addSale(@RequestBody SaleDTO saleDTO) {
-        Branch branch = branchService.getBranch(saleDTO.branchId);
-        AppUser appUser = appUserService.getAppUser(saleDTO.appUserId);
+    public ResponseEntity<?> addSale(@Valid @RequestBody SaleDTO saleDTO) {
+        try {
+            Branch branch = branchService.getBranch(saleDTO.branchId);
+            AppUser appUser = appUserService.getAppUser(saleDTO.appUserId);
 
-        if (branch == null || appUser == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            Sale newSale = new Sale();
+            newSale.setBranch(branch);
+            newSale.setAppUser(appUser);
+            newSale.setSaleDate(saleDTO.saleDate);
+            newSale.setAnnotations(saleDTO.annotations);
+            newSale.setCreatedAt(LocalDateTime.now());
+            newSale.setModifiedAt(LocalDateTime.now());
+
+            saleService.addSale(newSale);
+            SaleDTO savedSaleDTO = new SaleDTO(newSale);
+            return new ResponseEntity<>(savedSaleDTO, HttpStatus.CREATED);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (InvalidDataException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
-
-        Sale newSale = new Sale();
-        newSale.setBranch(branch);
-        newSale.setAppUser(appUser);
-        newSale.setSaleDate(saleDTO.saleDate);
-        newSale.setAnnotations(saleDTO.annotations);
-
-        LocalDateTime now = LocalDateTime.from(Instant.now());
-        newSale.setCreatedAt(now);
-        newSale.setModifiedAt(now);
-
-        saleService.addSale(newSale);
-        return new ResponseEntity<>(new SaleDTO(newSale), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<SaleDTO> updateSale(@PathVariable long id, @RequestBody SaleDTO saleDTO) {
-        Sale existingSale = saleService.getSale(id);
-        if (existingSale == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<?> updateSale(@PathVariable long id, @Valid @RequestBody SaleDTO saleDTO) {
+        try {
+            Branch branch = branchService.getBranch(saleDTO.branchId);
+            AppUser appUser = appUserService.getAppUser(saleDTO.appUserId);
+
+            Sale existingSale = saleService.getSale(id);
+            existingSale.setBranch(branch);
+            existingSale.setAppUser(appUser);
+            existingSale.setSaleDate(saleDTO.saleDate);
+            existingSale.setAnnotations(saleDTO.annotations);
+            existingSale.setModifiedAt(LocalDateTime.now());
+
+            saleService.addSale(existingSale);
+            SaleDTO updatedSaleDTO = new SaleDTO(existingSale);
+            return new ResponseEntity<>(updatedSaleDTO, HttpStatus.CREATED);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (InvalidDataException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
-
-        Branch branch = branchService.getBranch(saleDTO.branchId);
-        AppUser appUser = appUserService.getAppUser(saleDTO.appUserId);
-
-        if (branch == null || appUser == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        existingSale.setBranch(branch);
-        existingSale.setAppUser(appUser);
-        existingSale.setSaleDate(saleDTO.saleDate);
-        existingSale.setAnnotations(saleDTO.annotations);
-        existingSale.setModifiedAt(LocalDateTime.from(Instant.now()));
-
-        saleService.updateSale(existingSale);
-        return new ResponseEntity<>(new SaleDTO(existingSale), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteSale(@PathVariable long id) {
-        saleService.deleteSale(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public ResponseEntity<?> deleteSale(@PathVariable long id) {
+        try {
+            saleService.deleteSale(id);
+            return ResponseEntity.noContent().build();
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping
     public ResponseEntity<List<SaleDTO>> listSales() {
-        List<SaleDTO> sales = saleService.listSales()
-                .stream()
+        List<Sale> sales = saleService.listSales();
+        List<SaleDTO> saleDTOs = sales.stream()
                 .map(SaleDTO::new)
-                .toList();
-        return new ResponseEntity<>(sales, HttpStatus.OK);
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(saleDTOs);
     }
 
-    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<SaleDTO> getSale(@PathVariable long id) {
-        Sale sale = saleService.getSale(id);
-        if (sale != null) {
-            return new ResponseEntity<>(new SaleDTO(sale), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getSale(@PathVariable long id) {
+        try {
+            Sale sale = saleService.getSale(id);
+            return ResponseEntity.ok(new SaleDTO(sale));
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 }
