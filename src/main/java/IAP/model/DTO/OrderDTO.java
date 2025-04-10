@@ -3,7 +3,7 @@ package IAP.model.DTO;
 import IAP.model.Order;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 public class OrderDTO {
 
@@ -13,8 +13,8 @@ public class OrderDTO {
     public Long productId;
     public Integer quantitySold;
     public BigDecimal salePrice;
-    private Timestamp createdAt;
-    private Timestamp modifiedAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime modifiedAt;
 
     public OrderDTO() {}
 

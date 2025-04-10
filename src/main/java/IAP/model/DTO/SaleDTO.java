@@ -2,18 +2,17 @@ package IAP.model.DTO;
 
 import IAP.model.Sale;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 public class SaleDTO {
 
-    private Long id;
-    private Long branchId;
-    private Long appUserId;
-    private LocalDateTime saleDate;
-    private String annotations;
-    private Timestamp createdAt;
-    private Timestamp modifiedAt;
+    public Long id;
+    public Long branchId;
+    public Long appUserId;
+    public LocalDateTime saleDate;
+    public String annotations;
+    public LocalDateTime createdAt;
+    public LocalDateTime modifiedAt;
 
     public SaleDTO() {}
 
