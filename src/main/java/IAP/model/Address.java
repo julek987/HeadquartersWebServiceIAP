@@ -13,7 +13,7 @@ public class Address {
     private long id;
 
     @OneToOne
-    @JoinColumn(nullable = false)
+    @JoinColumn
     private Branch branch;
     //TODO verification (Same addresses can have different IDs, no need for relation)
 

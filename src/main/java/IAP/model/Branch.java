@@ -21,11 +21,11 @@ public class Branch {
     private String name;
 
     @OneToOne
-    @JoinColumn(nullable = false)
+    @JoinColumn
     private Address address;
 
     @OneToOne
-    @JoinColumn(name = "manager_id", nullable = false)
+    @JoinColumn(name = "manager_id")
     private AppUser manager;
 
     @Column(name = "created_at", nullable = false)
