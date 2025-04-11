@@ -3,7 +3,6 @@ package IAP.controller;
 import IAP.exception.InvalidDataException;
 import IAP.exception.ResourceNotFoundException;
 import IAP.model.Address;
-import IAP.model.Branch;
 import IAP.model.DTO.AddressDTO;
 import IAP.service.AddressService;
 import IAP.service.BranchService;
@@ -35,6 +34,10 @@ public class AddressController {
         try {
             Address newAddress = new Address();
             newAddress.setBranch(branchService.getBranch(addressDTO.branchId));
+            if (newAddress.getBranch() == null) {
+                throw new ResourceNotFoundException("Branch with ID " + addressDTO.branchId + " not found");
+            }
+
             newAddress.setBranchUserId(addressDTO.branchUserId);
             newAddress.setCountry(addressDTO.country);
             newAddress.setRegion(addressDTO.region);
@@ -49,10 +52,11 @@ public class AddressController {
             addressService.addAddress(newAddress);
             AddressDTO savedAddressDTO = new AddressDTO(newAddress);
             return new ResponseEntity<>(savedAddressDTO, HttpStatus.CREATED);
-        } catch (InvalidDataException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (ResourceNotFoundException | InvalidDataException e) {
+            throw e;
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An unexpected error occurred: " + e.getMessage());
         }
     }
 
@@ -60,8 +64,15 @@ public class AddressController {
     public ResponseEntity<?> updateAddress(@PathVariable long id, @Valid @RequestBody AddressDTO addressDTO) {
         try {
             Address existingAddress = addressService.getAddress(id);
-            existingAddress.setId(id);
+            if (existingAddress == null) {
+                throw new ResourceNotFoundException("Address with ID " + id + " not found");
+            }
+
             existingAddress.setBranch(branchService.getBranch(addressDTO.branchId));
+            if (existingAddress.getBranch() == null) {
+                throw new ResourceNotFoundException("Branch with ID " + addressDTO.branchId + " not found");
+            }
+
             existingAddress.setBranchUserId(addressDTO.branchUserId);
             existingAddress.setCountry(addressDTO.country);
             existingAddress.setRegion(addressDTO.region);
@@ -75,10 +86,8 @@ public class AddressController {
             addressService.addAddress(existingAddress);
             AddressDTO savedAddressDTO = new AddressDTO(existingAddress);
             return new ResponseEntity<>(savedAddressDTO, HttpStatus.CREATED);
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (InvalidDataException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (ResourceNotFoundException | InvalidDataException e) {
+            throw e;
         }
     }
 
@@ -88,7 +97,7 @@ public class AddressController {
             addressService.deleteAddress(id);
             return ResponseEntity.noContent().build();
         } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            throw e;
         }
     }
 
@@ -105,9 +114,12 @@ public class AddressController {
     public ResponseEntity<?> getAddress(@PathVariable long id) {
         try {
             Address address = addressService.getAddress(id);
+            if (address == null) {
+                throw new ResourceNotFoundException("Address with ID " + id + " not found");
+            }
             return ResponseEntity.ok(new AddressDTO(address));
         } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            throw e;
         }
     }
 }

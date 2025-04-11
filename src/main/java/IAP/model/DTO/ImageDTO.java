@@ -2,15 +2,16 @@ package IAP.model.DTO;
 
 import IAP.model.Image;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 public class ImageDTO {
 
-    public long id;
+    public Long id;
 
-    @NotBlank(message = "Product ID is required")
-    public long productId;
+    @NotNull(message = "Product ID is required")
+    public Long productId;
 
     @NotBlank(message = "URL is required")
     @Size(max = 255, message = "URL must be less than 255 characters")

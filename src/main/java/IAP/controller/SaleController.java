@@ -3,7 +3,6 @@ package IAP.controller;
 import IAP.exception.InvalidDataException;
 import IAP.exception.ResourceNotFoundException;
 import IAP.model.*;
-import IAP.model.DTO.AppUserDTO;
 import IAP.model.DTO.SaleDTO;
 import IAP.service.*;
 import jakarta.validation.Valid;
@@ -37,7 +36,14 @@ public class SaleController {
     public ResponseEntity<?> addSale(@Valid @RequestBody SaleDTO saleDTO) {
         try {
             Branch branch = branchService.getBranch(saleDTO.branchId);
+            if (branch == null) {
+                throw new ResourceNotFoundException("Branch with ID " + saleDTO.branchId + " not found");
+            }
+
             AppUser appUser = appUserService.getAppUser(saleDTO.appUserId);
+            if (appUser == null) {
+                throw new ResourceNotFoundException("AppUser with ID " + saleDTO.appUserId + " not found");
+            }
 
             Sale newSale = new Sale();
             newSale.setBranch(branch);
@@ -50,10 +56,11 @@ public class SaleController {
             saleService.addSale(newSale);
             SaleDTO savedSaleDTO = new SaleDTO(newSale);
             return new ResponseEntity<>(savedSaleDTO, HttpStatus.CREATED);
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (InvalidDataException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (ResourceNotFoundException | InvalidDataException e) {
+            throw e;
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An unexpected error occurred: " + e.getMessage());
         }
     }
 
@@ -61,9 +68,20 @@ public class SaleController {
     public ResponseEntity<?> updateSale(@PathVariable long id, @Valid @RequestBody SaleDTO saleDTO) {
         try {
             Branch branch = branchService.getBranch(saleDTO.branchId);
+            if (branch == null) {
+                throw new ResourceNotFoundException("Branch with ID " + saleDTO.branchId + " not found");
+            }
+
             AppUser appUser = appUserService.getAppUser(saleDTO.appUserId);
+            if (appUser == null) {
+                throw new ResourceNotFoundException("AppUser with ID " + saleDTO.appUserId + " not found");
+            }
 
             Sale existingSale = saleService.getSale(id);
+            if (existingSale == null) {
+                throw new ResourceNotFoundException("Sale with ID " + id + " not found");
+            }
+
             existingSale.setBranch(branch);
             existingSale.setAppUser(appUser);
             existingSale.setSaleDate(saleDTO.saleDate);
@@ -73,10 +91,8 @@ public class SaleController {
             saleService.addSale(existingSale);
             SaleDTO updatedSaleDTO = new SaleDTO(existingSale);
             return new ResponseEntity<>(updatedSaleDTO, HttpStatus.CREATED);
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (InvalidDataException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (ResourceNotFoundException | InvalidDataException e) {
+            throw e;
         }
     }
 
@@ -86,7 +102,7 @@ public class SaleController {
             saleService.deleteSale(id);
             return ResponseEntity.noContent().build();
         } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            throw e;
         }
     }
 
@@ -103,9 +119,12 @@ public class SaleController {
     public ResponseEntity<?> getSale(@PathVariable long id) {
         try {
             Sale sale = saleService.getSale(id);
+            if (sale == null) {
+                throw new ResourceNotFoundException("Sale with ID " + id + " not found");
+            }
             return ResponseEntity.ok(new SaleDTO(sale));
         } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            throw e;
         }
     }
 }

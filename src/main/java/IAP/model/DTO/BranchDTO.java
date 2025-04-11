@@ -2,6 +2,7 @@ package IAP.model.DTO;
 
 import IAP.model.Branch;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
 
@@ -9,13 +10,13 @@ public class BranchDTO {
 
     public Long id;
 
-    @NotBlank(message = "Branch name is required")
+    @NotNull(message = "Branch name is required")
     @Size(max = 100, message = "Branch name must be less than 100 characters")
     public String name;
 
     public boolean active;
 
-    @NotBlank(message = "Address ID is required")
+    @NotNull(message = "Address ID is required")
     public Long addressId;
 
     public Long managerId;

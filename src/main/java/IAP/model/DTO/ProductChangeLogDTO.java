@@ -1,6 +1,7 @@
 package IAP.model.DTO;
 
 import IAP.model.ProductChangeLog;
+import IAP.model.objects.ProductChanges;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -20,7 +21,7 @@ public class ProductChangeLogDTO {
     public String changeReason;
 
     @NotNull(message = "Changes are required")
-    public Object changes; // Assuming this will be some object related to the changes
+    public ProductChanges changes; // Now a ProductChanges type
 
     public LocalDateTime createdAt;
     public LocalDateTime modifiedAt;
@@ -32,7 +33,7 @@ public class ProductChangeLogDTO {
         this.productId = productChangeLog.getProduct() != null ? productChangeLog.getProduct().getId() : null;
         this.changedById = productChangeLog.getChangedBy() != null ? productChangeLog.getChangedBy().getId() : null;
         this.changeReason = productChangeLog.getChangeReason();
-        this.changes = productChangeLog.getChanges();
+        this.changes = productChangeLog.getChanges(); // Directly set as ProductChanges
         this.createdAt = productChangeLog.getCreatedAt();
     }
 }

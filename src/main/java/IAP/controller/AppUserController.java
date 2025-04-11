@@ -38,7 +38,7 @@ public class AppUserController {
         try {
             Address address = addressService.getAddressById(String.valueOf(appUserDTO.addressId));
             if (address == null) {
-                return ResponseEntity.badRequest().body("Address with ID " + appUserDTO.addressId + " does not exist");
+                throw new ResourceNotFoundException("Address with ID " + appUserDTO.addressId + " does not exist");
             }
 
             Branch branch = branchService.getBranch(appUserDTO.branchId);
@@ -57,21 +57,22 @@ public class AppUserController {
             appUserService.addAppUser(newUser);
             AppUserDTO savedAppUserDTO = new AppUserDTO(newUser);
             return new ResponseEntity<>(savedAppUserDTO, HttpStatus.CREATED);
+        } catch (ResourceNotFoundException | InvalidDataException e) {
+            throw e;
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An unexpected error occurred: " + e.getMessage());
         }
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateAppUser(@PathVariable long id, @Valid @RequestBody AppUserDTO appUserDTO) {
         try {
-            // Fetch the address by its ID
             Address address = addressService.getAddressById(String.valueOf(appUserDTO.addressId));
             if (address == null) {
-                return ResponseEntity.badRequest().body("Address with ID " + appUserDTO.addressId + " does not exist");
+                throw new ResourceNotFoundException("Address with ID " + appUserDTO.addressId + " does not exist");
             }
 
-            // Fetch the existing AppUser and update its fields
             AppUser existingUser = appUserService.getAppUser(id);
             existingUser.setFirstName(appUserDTO.firstName);
             existingUser.setLastName(appUserDTO.lastName);
@@ -79,13 +80,13 @@ public class AppUserController {
             existingUser.setPhoneNumber(appUserDTO.phoneNumber);
             existingUser.setLogin(appUserDTO.login);
             existingUser.setPassword(appUserDTO.password);
-            existingUser.setAddress(address);  // Set the address object
+            existingUser.setAddress(address);
 
             appUserService.addAppUser(existingUser);
             AppUserDTO savedAppUserDTO = new AppUserDTO(existingUser);
             return new ResponseEntity<>(savedAppUserDTO, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (ResourceNotFoundException | InvalidDataException e) {
+            throw e;
         }
     }
 
@@ -95,7 +96,7 @@ public class AppUserController {
             appUserService.deleteAppUser(id);
             return ResponseEntity.noContent().build();
         } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            throw e;
         }
     }
 
@@ -114,7 +115,7 @@ public class AppUserController {
             AppUser user = appUserService.getAppUser(id);
             return ResponseEntity.ok(new AppUserDTO(user));
         } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            throw e;
         }
     }
 }

@@ -3,7 +3,6 @@ package IAP.controller;
 import IAP.exception.InvalidDataException;
 import IAP.exception.ResourceNotFoundException;
 import IAP.model.*;
-import IAP.model.DTO.AppUserDTO;
 import IAP.model.DTO.OrderDTO;
 import IAP.service.*;
 import jakarta.validation.Valid;
@@ -40,8 +39,19 @@ public class OrderController {
     public ResponseEntity<?> addOrder(@Valid @RequestBody OrderDTO orderDTO) {
         try {
             Branch branch = branchService.getBranch(orderDTO.branchId);
+            if (branch == null) {
+                throw new ResourceNotFoundException("Branch with ID " + orderDTO.branchId + " not found");
+            }
+
             Product product = productService.getProduct(orderDTO.productId);
+            if (product == null) {
+                throw new ResourceNotFoundException("Product with ID " + orderDTO.productId + " not found");
+            }
+
             Sale sale = saleService.getSale(orderDTO.saleId);
+            if (sale == null) {
+                throw new ResourceNotFoundException("Sale with ID " + orderDTO.saleId + " not found");
+            }
 
             Order newOrder = new Order();
             newOrder.setBranch(branch);
@@ -55,21 +65,37 @@ public class OrderController {
             orderService.addOrder(newOrder);
             OrderDTO savedOrderDTO = new OrderDTO(newOrder);
             return new ResponseEntity<>(savedOrderDTO, HttpStatus.CREATED);
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (InvalidDataException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (ResourceNotFoundException | InvalidDataException e) {
+            throw e;
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An unexpected error occurred: " + e.getMessage());
         }
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateOrder(@PathVariable long id, @Valid @RequestBody OrderDTO orderDTO) {
         try {
-            Branch branch = branchService.getBranch(orderDTO.branchId);
-            Product product = productService.getProduct(orderDTO.productId);
-            Sale sale = saleService.getSale(orderDTO.saleId);
-
             Order existingOrder = orderService.getOrder(id);
+            if (existingOrder == null) {
+                throw new ResourceNotFoundException("Order with ID " + id + " not found");
+            }
+
+            Branch branch = branchService.getBranch(orderDTO.branchId);
+            if (branch == null) {
+                throw new ResourceNotFoundException("Branch with ID " + orderDTO.branchId + " not found");
+            }
+
+            Product product = productService.getProduct(orderDTO.productId);
+            if (product == null) {
+                throw new ResourceNotFoundException("Product with ID " + orderDTO.productId + " not found");
+            }
+
+            Sale sale = saleService.getSale(orderDTO.saleId);
+            if (sale == null) {
+                throw new ResourceNotFoundException("Sale with ID " + orderDTO.saleId + " not found");
+            }
+
             existingOrder.setBranch(branch);
             existingOrder.setProduct(product);
             existingOrder.setSale(sale);
@@ -78,12 +104,13 @@ public class OrderController {
             existingOrder.setModifiedAt(LocalDateTime.now());
 
             orderService.addOrder(existingOrder);
-            OrderDTO savedOrderDTO = new OrderDTO(existingOrder);
-            return new ResponseEntity<>(savedOrderDTO, HttpStatus.CREATED);
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (InvalidDataException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            OrderDTO updatedOrderDTO = new OrderDTO(existingOrder);
+            return new ResponseEntity<>(updatedOrderDTO, HttpStatus.CREATED);
+        } catch (ResourceNotFoundException | InvalidDataException e) {
+            throw e;
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An unexpected error occurred: " + e.getMessage());
         }
     }
 
@@ -93,7 +120,10 @@ public class OrderController {
             orderService.deleteOrder(id);
             return ResponseEntity.noContent().build();
         } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            throw e;
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An unexpected error occurred: " + e.getMessage());
         }
     }
 
@@ -110,9 +140,15 @@ public class OrderController {
     public ResponseEntity<?> getOrder(@PathVariable long id) {
         try {
             Order order = orderService.getOrder(id);
+            if (order == null) {
+                throw new ResourceNotFoundException("Order with ID " + id + " not found");
+            }
             return ResponseEntity.ok(new OrderDTO(order));
         } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            throw e;
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An unexpected error occurred: " + e.getMessage());
         }
     }
 }
