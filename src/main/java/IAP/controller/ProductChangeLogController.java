@@ -4,6 +4,7 @@ import IAP.model.AppUser;
 import IAP.model.DTO.ProductChangeLogDTO;
 import IAP.model.Product;
 import IAP.model.ProductChangeLog;
+import IAP.model.objects.ProductChanges;
 import IAP.service.AppUserService;
 import IAP.service.ProductChangeLogService;
 import IAP.service.ProductService;
@@ -73,7 +74,7 @@ public class ProductChangeLogController {
         productChangeLog.setProduct(existingProduct);
         productChangeLog.setChangedBy(existingAppUser);
         productChangeLog.setChangeReason(productChangeLogDTO.changeReason);
-        productChangeLog.setChanges(productChangeLogDTO.changes);
+        productChangeLog.setChanges((ProductChanges) productChangeLogDTO.changes);
         productChangeLog.setCreatedAt(LocalDateTime.now());
 
         productChangeLogService.addProductChangeLog(productChangeLog);
