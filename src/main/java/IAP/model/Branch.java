@@ -1,8 +1,10 @@
 package IAP.model;
 
 import jakarta.persistence.*;
+import org.springframework.lang.NonNull;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "branches")
@@ -18,19 +20,21 @@ public class Branch {
     @Column(name = "name",  nullable = false)
     private String name;
 
-    @Column(name = "address",  nullable = false)
-    private long address;
+    @OneToOne
+    @JoinColumn(nullable = false)
+    private Address address;
 
-    @Column(name = "manager",  nullable = false)
-    private long manager;
+    @OneToOne
+    @JoinColumn(name = "manager_id", nullable = false)
+    private AppUser manager;
 
     @Column(name = "created_at", nullable = false)
-    private Timestamp createdAt;
+    private LocalDateTime createdAt;
 
     @Column(name = "modified_at", nullable = false)
-    private Timestamp modifiedAt;
+    private LocalDateTime modifiedAt;
 
-    public Branch() {}
+
 
     public long getId() {return id;}
     public void setId(long id) {this.id = id;}
@@ -41,16 +45,16 @@ public class Branch {
     public String getName() {return name;}
     public void setName(String name) {this.name = name;}
 
-    public long getAddress() {return address;}
-    public void setAddress(long address) {this.address = address;}
+    public Address getAddress() {return address;}
+    public void setAddress(Address address) {this.address = address;}
 
-    public long getManager() {return manager;}
-    public void setManager(long manager) {this.manager = manager;}
+    public AppUser getManager() {return manager;}
+    public void setManager(AppUser manager) {this.manager = manager;}
 
-    public Timestamp getCreatedAt() {return createdAt;}
-    public void setCreatedAt(Timestamp createdAt) {this.createdAt = createdAt;}
+    public LocalDateTime getCreatedAt() {return createdAt;}
+    public void setCreatedAt(LocalDateTime createdAt) {this.createdAt = createdAt;}
 
-    public Timestamp getModifiedAt() {return modifiedAt;}
-    public void setModifiedAt(Timestamp modifiedAt) {this.modifiedAt = modifiedAt;}
+    public LocalDateTime getModifiedAt() {return modifiedAt;}
+    public void setModifiedAt(LocalDateTime modifiedAt) {this.modifiedAt = modifiedAt;}
 
 }

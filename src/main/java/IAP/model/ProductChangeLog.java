@@ -1,8 +1,12 @@
 package IAP.model;
 
+import IAP.model.objects.ProductChanges;
+import IAP.utils.ProductChangesConverter;
 import jakarta.persistence.*;
 
+
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "product_change_logs")
@@ -13,40 +17,42 @@ public class ProductChangeLog {
     @Column(name = "id")
     private long id;
 
-    @Column(name = "product_id",  nullable = false)
-    private long productId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Product product;
 
-    @Column(name = "changed_by", nullable = false)
-    private long changedBy;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "changed_by", nullable = false)
+    private AppUser changedBy;
 
     @Column(name = "change_reason", nullable = true)
     private String changeReason;
 
-    // !!! This is json but I don't know how to do it yet :)
-    @Column(name = "changes", nullable = false)
-    private String changes;
+    @Convert(converter = ProductChangesConverter.class)
+    @Column(name = "changes", columnDefinition = "TEXT", nullable = false)
+    private ProductChanges changes;
 
     @Column(name = "created_at", nullable = false)
-    private Timestamp createdAt;
+    private LocalDateTime createdAt;
 
-    public ProductChangeLog() {}
+
+    // getters and setters :)
 
     public long getId() { return id; }
     public void setId(long id) { this.id = id; }
 
-    public long getProductId() { return productId; }
-    public void setProductId(long productId) { this.productId = productId; }
+    public Product getProduct() { return product; }
+    public void setProduct(Product product) { this.product = product; }
 
-    public long getChangedBy() { return changedBy; }
-    public void setChangedBy(long changedBy) { this.changedBy = changedBy; }
+    public AppUser getChangedBy() { return changedBy; }
+    public void setChangedBy(AppUser changedBy) { this.changedBy = changedBy; }
 
     public String getChangeReason() { return changeReason; }
     public void setChangeReason(String changeReason) { this.changeReason = changeReason; }
 
-    public String getChanges() { return changes; }
-    public void setChanges(String changes) { this.changes = changes; }
+    public ProductChanges getChanges() { return changes; }
+    public void setChanges(ProductChanges changes) { this.changes = changes; }
 
-    public Timestamp getCreatedAt() { return createdAt; }
-    public void setCreatedAt(Timestamp createdAt) { this.createdAt = createdAt; }
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 
 }
