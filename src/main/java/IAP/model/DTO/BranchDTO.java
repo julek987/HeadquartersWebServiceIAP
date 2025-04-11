@@ -2,16 +2,15 @@ package IAP.model.DTO;
 
 import IAP.model.Branch;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 public class BranchDTO {
 
-    public long             id;
+    public Long             id;
     public boolean          active;
     public String           name;
-    public long             addressId;
-    public long             managerId;
+    public Long            addressId;
+    public Long             managerId;
     public LocalDateTime    createdAt;
     public LocalDateTime    modifiedAt;
 
@@ -21,8 +20,8 @@ public class BranchDTO {
         this.id         = branch.getId();
         this.active     = branch.isActive();
         this.name       = branch.getName();
-        this.addressId  = branch.getAddress().getId();
-        this.managerId  = branch.getManager().getId();
+        this.addressId  = branch.getAddress() != null ? branch.getAddress().getId() : null;
+        this.managerId  = branch.getManager() != null ? branch.getManager().getId() : null;
         this.createdAt  = branch.getCreatedAt();
         this.modifiedAt = branch.getModifiedAt();
     }

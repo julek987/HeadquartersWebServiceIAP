@@ -1,9 +1,6 @@
 package IAP.model;
 
 import jakarta.persistence.*;
-import org.springframework.lang.NonNull;
-
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Entity

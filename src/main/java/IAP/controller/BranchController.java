@@ -13,7 +13,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,14 +60,20 @@ public class BranchController {
     public ResponseEntity<BranchDTO> addBranch(
             @RequestBody BranchDTO branchDTO
     ) {
-        Address existingAddress = addressService.getAddress(branchDTO.addressId);
-        if (existingAddress == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        Address existingAddress = null;
+        if (branchDTO.addressId != null) {
+            existingAddress = addressService.getAddress(branchDTO.addressId);
+            if (existingAddress == null) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
         }
 
-        AppUser existingManager = appUserService.getAppUser(branchDTO.managerId);
-        if (existingManager == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        AppUser existingManager = null;
+        if (branchDTO.managerId != null) {
+            existingManager = appUserService.getAppUser(branchDTO.managerId);
+            if (existingManager == null) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
         }
 
 
