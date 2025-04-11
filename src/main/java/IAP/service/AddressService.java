@@ -11,4 +11,5 @@ public interface AddressService {
     void deleteAddress(long id) throws ResourceNotFoundException;
     List<Address> listAddresses();
     Address getAddress(long id) throws ResourceNotFoundException;
+    Address getAddressById(String id) throws ResourceNotFoundException;
 }

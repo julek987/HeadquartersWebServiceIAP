@@ -2,9 +2,13 @@ package IAP.controller;
 
 import IAP.exception.InvalidDataException;
 import IAP.exception.ResourceNotFoundException;
+import IAP.model.Address;
 import IAP.model.AppUser;
+import IAP.model.Branch;
 import IAP.model.DTO.AppUserDTO;
+import IAP.service.AddressService;
 import IAP.service.AppUserService;
+import IAP.service.BranchService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,15 +23,26 @@ import java.util.stream.Collectors;
 public class AppUserController {
 
     private final AppUserService appUserService;
+    private final AddressService addressService;
+    private final BranchService branchService;
 
     @Autowired
-    public AppUserController(AppUserService appUserService) {
+    public AppUserController(AppUserService appUserService, AddressService addressService, BranchService branchService) {
         this.appUserService = appUserService;
+        this.addressService = addressService;
+        this.branchService = branchService;
     }
 
     @PostMapping
     public ResponseEntity<?> addAppUser(@Valid @RequestBody AppUserDTO appUserDTO) {
         try {
+            Address address = addressService.getAddressById(String.valueOf(appUserDTO.addressId));
+            if (address == null) {
+                return ResponseEntity.badRequest().body("Address with ID " + appUserDTO.addressId + " does not exist");
+            }
+
+            Branch branch = branchService.getBranch(appUserDTO.branchId);
+
             AppUser newUser = new AppUser();
             newUser.setFirstName(appUserDTO.firstName);
             newUser.setLastName(appUserDTO.lastName);
@@ -35,11 +50,14 @@ public class AppUserController {
             newUser.setPhoneNumber(appUserDTO.phoneNumber);
             newUser.setLogin(appUserDTO.login);
             newUser.setPassword(appUserDTO.password);
+            newUser.setAddress(address);
+            newUser.setBranch(branch);
+            newUser.setBranchUserId(appUserDTO.branchUserId);
 
             appUserService.addAppUser(newUser);
             AppUserDTO savedAppUserDTO = new AppUserDTO(newUser);
             return new ResponseEntity<>(savedAppUserDTO, HttpStatus.CREATED);
-        } catch (InvalidDataException e) {
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -47,22 +65,27 @@ public class AppUserController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updateAppUser(@PathVariable long id, @Valid @RequestBody AppUserDTO appUserDTO) {
         try {
+            // Fetch the address by its ID
+            Address address = addressService.getAddressById(String.valueOf(appUserDTO.addressId));
+            if (address == null) {
+                return ResponseEntity.badRequest().body("Address with ID " + appUserDTO.addressId + " does not exist");
+            }
+
+            // Fetch the existing AppUser and update its fields
             AppUser existingUser = appUserService.getAppUser(id);
-            existingUser.setId(id);
             existingUser.setFirstName(appUserDTO.firstName);
             existingUser.setLastName(appUserDTO.lastName);
             existingUser.setEmail(appUserDTO.email);
             existingUser.setPhoneNumber(appUserDTO.phoneNumber);
             existingUser.setLogin(appUserDTO.login);
             existingUser.setPassword(appUserDTO.password);
+            existingUser.setAddress(address);  // Set the address object
 
             appUserService.addAppUser(existingUser);
             AppUserDTO savedAppUserDTO = new AppUserDTO(existingUser);
             return new ResponseEntity<>(savedAppUserDTO, HttpStatus.CREATED);
-        } catch (ResourceNotFoundException e) {
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (InvalidDataException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 

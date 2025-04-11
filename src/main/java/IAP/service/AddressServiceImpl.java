@@ -59,6 +59,11 @@ public class AddressServiceImpl implements AddressService {
                 .orElseThrow(() -> new ResourceNotFoundException("Address not found with id: " + id));
     }
 
+    @Override
+    public Address getAddressById(String addressId) {
+        return addressRepository.findById(Long.parseLong(addressId)).orElse(null);  // Return null if address not found
+    }
+
     private void validateAddress(Address address) throws InvalidDataException {
         if (!StringUtils.hasText(address.getCountry())) {
             throw new InvalidDataException("Country is required");

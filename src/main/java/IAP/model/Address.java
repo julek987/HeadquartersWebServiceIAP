@@ -15,7 +15,6 @@ public class Address {
     @OneToOne
     @JoinColumn
     private Branch branch;
-    //TODO verification (Same addresses can have different IDs, no need for relation)
 
     @Column(name = "branch_user_id", nullable = false)
     private long branchUserId;
