@@ -1,7 +1,7 @@
 package IAP.model;
 
 import jakarta.persistence.*;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "address")
@@ -9,11 +9,13 @@ public class Address {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "address_id")
     private long id;
 
-    @Column(name = "branch_id", nullable = false)
-    private long branchId;
+    @OneToOne
+    @JoinColumn(nullable = false)
+    private Branch branch;
+    //TODO verification (Same addresses can have different IDs, no need for relation)
 
     @Column(name = "branch_user_id", nullable = false)
     private long branchUserId;
@@ -40,10 +42,10 @@ public class Address {
     private String addressLine2;
 
     @Column(name = "created_at", nullable = false)
-    private Timestamp createdAt;
+    private LocalDateTime createdAt;
 
     @Column(name = "modified_at", nullable = false)
-    private Timestamp modifiedAt;
+    private LocalDateTime modifiedAt;
 
     public Address() {}
 
@@ -55,12 +57,12 @@ public class Address {
         this.id = id;
     }
 
-    public long getBranchId() {
-        return branchId;
+    public Branch getBranch() {
+        return branch;
     }
 
-    public void setBranchId(long branchId) {
-        this.branchId = branchId;
+    public void setBranch(Branch branch) {
+        this.branch = branch;
     }
 
     public long getBranchUserId() {
@@ -127,19 +129,19 @@ public class Address {
         this.addressLine2 = addressLine2;
     }
 
-    public Timestamp getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Timestamp createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
-    public Timestamp getModifiedAt() {
+    public LocalDateTime getModifiedAt() {
         return modifiedAt;
     }
 
-    public void setModifiedAt(Timestamp modifiedAt) {
+    public void setModifiedAt(LocalDateTime modifiedAt) {
         this.modifiedAt = modifiedAt;
     }
 }

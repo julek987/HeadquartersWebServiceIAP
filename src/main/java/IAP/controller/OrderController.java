@@ -1,72 +1,118 @@
 package IAP.controller;
 
-import IAP.model.Order;
-import IAP.service.OrderService;
+import IAP.exception.InvalidDataException;
+import IAP.exception.ResourceNotFoundException;
+import IAP.model.*;
+import IAP.model.DTO.AppUserDTO;
+import IAP.model.DTO.OrderDTO;
+import IAP.service.*;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/order")
+@RequestMapping("/api/orders")
 public class OrderController {
 
     private final OrderService orderService;
+    private final BranchService branchService;
+    private final ProductService productService;
+    private final SaleService saleService;
 
     @Autowired
-    public OrderController(OrderService orderService) {
+    public OrderController(OrderService orderService,
+                           BranchService branchService,
+                           ProductService productService,
+                           SaleService saleService) {
         this.orderService = orderService;
+        this.branchService = branchService;
+        this.productService = productService;
+        this.saleService = saleService;
     }
 
     @PostMapping
-    public ResponseEntity<Order> addOrder(@RequestBody Order order) {
-        Timestamp now = new Timestamp(System.currentTimeMillis() / 1000);
-        order.setCreatedAt(now);
-        order.setModifiedAt(now);
+    public ResponseEntity<?> addOrder(@Valid @RequestBody OrderDTO orderDTO) {
+        try {
+            Branch branch = branchService.getBranch(orderDTO.branchId);
+            Product product = productService.getProduct(orderDTO.productId);
+            Sale sale = saleService.getSale(orderDTO.saleId);
 
-        orderService.addOrder(order);
-        return new ResponseEntity<>(order, HttpStatus.CREATED);
+            Order newOrder = new Order();
+            newOrder.setBranch(branch);
+            newOrder.setProduct(product);
+            newOrder.setSale(sale);
+            newOrder.setQuantitySold(orderDTO.quantitySold);
+            newOrder.setSalePrice(orderDTO.salePrice);
+            newOrder.setCreatedAt(LocalDateTime.now());
+            newOrder.setModifiedAt(LocalDateTime.now());
+
+            orderService.addOrder(newOrder);
+            OrderDTO savedOrderDTO = new OrderDTO(newOrder);
+            return new ResponseEntity<>(savedOrderDTO, HttpStatus.CREATED);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (InvalidDataException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Order> updateOrder(@PathVariable long id, @RequestBody Order order) {
-        Order existingOrder = orderService.getOrder(id);
-        if (existingOrder== null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<?> updateOrder(@PathVariable long id, @Valid @RequestBody OrderDTO orderDTO) {
+        try {
+            Branch branch = branchService.getBranch(orderDTO.branchId);
+            Product product = productService.getProduct(orderDTO.productId);
+            Sale sale = saleService.getSale(orderDTO.saleId);
+
+            Order existingOrder = orderService.getOrder(id);
+            existingOrder.setBranch(branch);
+            existingOrder.setProduct(product);
+            existingOrder.setSale(sale);
+            existingOrder.setQuantitySold(orderDTO.quantitySold);
+            existingOrder.setSalePrice(orderDTO.salePrice);
+            existingOrder.setModifiedAt(LocalDateTime.now());
+
+            orderService.addOrder(existingOrder);
+            OrderDTO savedOrderDTO = new OrderDTO(existingOrder);
+            return new ResponseEntity<>(savedOrderDTO, HttpStatus.CREATED);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (InvalidDataException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
-
-        // Preserve the createdAt field from the existing entity
-        order.setCreatedAt(existingOrder.getCreatedAt());
-        order.setModifiedAt(new Timestamp(System.currentTimeMillis()  / 1000));
-        order.setId(id);
-
-        orderService.updateOrder(order);
-        return new ResponseEntity<>(order, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteOrder(@PathVariable long id) {
-        orderService.deleteOrder(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public ResponseEntity<?> deleteOrder(@PathVariable long id) {
+        try {
+            orderService.deleteOrder(id);
+            return ResponseEntity.noContent().build();
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Order>> listOrders() {
+    @GetMapping
+    public ResponseEntity<List<OrderDTO>> listOrders() {
         List<Order> orders = orderService.listOrders();
-        return new ResponseEntity<>(orders, HttpStatus.OK);
+        List<OrderDTO> orderDTOs = orders.stream()
+                .map(OrderDTO::new)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(orderDTOs);
     }
 
-    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Order> getOrder(@PathVariable long id) {
-        Order order = orderService.getOrder(id);
-        if (order != null) {
-            return new ResponseEntity<>(order, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getOrder(@PathVariable long id) {
+        try {
+            Order order = orderService.getOrder(id);
+            return ResponseEntity.ok(new OrderDTO(order));
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 }

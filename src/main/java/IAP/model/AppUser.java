@@ -1,7 +1,7 @@
 package IAP.model;
 
 import jakarta.persistence.*;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,11 +11,12 @@ public class AppUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "user_id")
     private long id;
 
-    @Column(name = "branch_id", nullable = false)
-    private long branchId;
+    @ManyToOne
+    @JoinColumn(name = "branch_id", nullable = false)
+    private Branch branch;
 
     @Column(name = "branch_user_id", nullable = false)
     private long branchUserId;
@@ -38,8 +39,9 @@ public class AppUser {
     @Column(name = "phone_number")
     private String phoneNumber;
 
-    @Column(name = "address", nullable = false)
-    private long address;
+    @ManyToOne
+    @JoinColumn(name = "address_id", nullable = false)
+    private Address address;
 
     @Column(name = "role", nullable = false)
     private int role;
@@ -51,10 +53,10 @@ public class AppUser {
     private String password;
 
     @Column(name = "created_at", nullable = false)
-    private Timestamp createdAt;
+    private LocalDateTime createdAt;
 
     @Column(name = "modified_at", nullable = false)
-    private Timestamp modifiedAt;
+    private LocalDateTime modifiedAt;
 
 
     // mapped
@@ -78,14 +80,6 @@ public class AppUser {
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public long getBranchId() {
-        return branchId;
-    }
-
-    public void setBranchId(long branchId) {
-        this.branchId = branchId;
     }
 
     public long getBranchUserId() {
@@ -144,13 +138,13 @@ public class AppUser {
         this.phoneNumber = phoneNumber;
     }
 
-    public long getAddress() {
-        return address;
-    }
+    public Address getAddress() {return address;}
 
-    public void setAddress(long address) {
-        this.address = address;
-    }
+    public void setAddress(Address address) {this.address = address;}
+
+    public Branch getBranch() {return branch;}
+
+    public void setBranch(Branch branch) {this.branch = branch;}
 
     public int getRole() {
         return role;
@@ -176,19 +170,19 @@ public class AppUser {
         this.password = password;
     }
 
-    public Timestamp getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Timestamp createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
-    public Timestamp getModifiedAt() {
+    public LocalDateTime getModifiedAt() {
         return modifiedAt;
     }
 
-    public void setModifiedAt(Timestamp modifiedAt) {
+    public void setModifiedAt(LocalDateTime modifiedAt) {
         this.modifiedAt = modifiedAt;
     }
 

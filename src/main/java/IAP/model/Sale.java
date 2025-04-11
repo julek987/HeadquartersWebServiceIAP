@@ -4,25 +4,24 @@ package IAP.model;
 import jakarta.persistence.*;
 
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "sales")
-public class Sales {
+public class Sale {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "sale_id")
     private Long id;
 
-    @Column(name = "branch_id", nullable = false)
-    private Long branchId;
+    @ManyToOne
+    @JoinColumn(name = "branch_id", nullable = false)
+    private Branch branch;
 
-    @Column(name = "sale_id", nullable = false)
-    private Long saleId;
-
-    @Column(name = "sold_by", nullable = false)
-    private Long soldBy;
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private AppUser appUser;
 
     @Column(name = "sale_date", nullable = false)
     private LocalDateTime saleDate;
@@ -31,12 +30,12 @@ public class Sales {
     private String annotations;
 
     @Column(name = "created_at", nullable = false)
-    private Timestamp createdAt;
+    private LocalDateTime createdAt;
 
     @Column(name = "modified_at", nullable = false)
-    private Timestamp modifiedAt;
+    private LocalDateTime modifiedAt;
 
-    // Getters and Setters
+
     public Long getId() {
         return id;
     }
@@ -45,28 +44,20 @@ public class Sales {
         this.id = id;
     }
 
-    public Long getBranchId() {
-        return branchId;
+    public Branch getBranch() {
+        return branch;
     }
 
-    public void setBranchId(Long branchId) {
-        this.branchId = branchId;
+    public void setBranch(Branch branch) {
+        this.branch = branch;
     }
 
-    public Long getSaleId() {
-        return saleId;
+    public AppUser getAppUser() {
+        return appUser;
     }
 
-    public void setSaleId(Long saleId) {
-        this.saleId = saleId;
-    }
-
-    public Long getSoldBy() {
-        return soldBy;
-    }
-
-    public void setSoldBy(Long soldBy) {
-        this.soldBy = soldBy;
+    public void setAppUser(AppUser appUser) {
+        this.appUser = appUser;
     }
 
     public LocalDateTime getSaleDate() {
@@ -85,19 +76,19 @@ public class Sales {
         this.annotations = annotations;
     }
 
-    public Timestamp getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Timestamp createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
-    public Timestamp getModifiedAt() {
+    public LocalDateTime getModifiedAt() {
         return modifiedAt;
     }
 
-    public void setModifiedAt(Timestamp modifiedAt) {
+    public void setModifiedAt(LocalDateTime modifiedAt) {
         this.modifiedAt = modifiedAt;
     }
 }
