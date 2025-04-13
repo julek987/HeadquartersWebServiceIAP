@@ -25,7 +25,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = TestConfig.class)
-public class AppUserTest {
+public class AppUserServiceTest {
 
     @Autowired
     private AppUserService appUserService;
