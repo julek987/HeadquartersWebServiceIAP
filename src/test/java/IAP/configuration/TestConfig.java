@@ -1,8 +1,6 @@
 package IAP.configuration;
 
-import IAP.repository.AddressRepository;
-import IAP.repository.AppUserRepository;
-import IAP.repository.BranchRepository;
+import IAP.repository.*;
 import IAP.service.*;
 import org.mockito.Mockito;
 import org.springframework.context.annotation.Bean;
@@ -43,6 +41,50 @@ public class TestConfig {
     @Bean
     public BranchService branchService(BranchRepository repo) {
         return new BranchServiceImpl(repo);
+    }
+
+    //                ----- Image -----
+    @Bean
+    public ImageRepository imageRepository() {
+        return Mockito.mock(ImageRepository.class);
+    }
+
+    @Bean
+    public ImageService imageService(ImageRepository repo) {
+        return new ImageServiceImpl(repo);
+    }
+
+    //                ----- Order -----
+    @Bean
+    public OrderRepository orderRepository() {
+        return Mockito.mock(OrderRepository.class);
+    }
+
+    @Bean
+    public OrderService orderService(OrderRepository repo) {
+        return new OrderServiceImpl(repo);
+    }
+
+    //                ----- Product -----
+    @Bean
+    public ProductRepository productRepository() {
+        return Mockito.mock(ProductRepository.class);
+    }
+
+    @Bean
+    public ProductService productService(ProductRepository repo) {
+        return new ProductServiceImpl(repo);
+    }
+
+    //                ----- Sale -----
+    @Bean
+    public SaleRepository saleRepository() {
+        return Mockito.mock(SaleRepository.class);
+    }
+
+    @Bean
+    public SaleService saleService(SaleRepository repo) {
+        return new SaleServiceImpl(repo);
     }
 
 }
