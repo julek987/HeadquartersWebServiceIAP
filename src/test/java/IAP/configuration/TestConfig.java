@@ -76,6 +76,17 @@ public class TestConfig {
         return new ProductServiceImpl(repo);
     }
 
+    //                ----- ProductChangeLog -----
+    @Bean
+    public ProductChangeLogRepository productChangeLogRepository() {
+        return Mockito.mock(ProductChangeLogRepository.class);
+    }
+
+    @Bean
+    public ProductChangeLogService productChangeLogService(ProductChangeLogRepository repo) {
+        return new ProductChangeLogServiceImpl(repo);
+    }
+
     //                ----- Sale -----
     @Bean
     public SaleRepository saleRepository() {

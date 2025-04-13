@@ -27,9 +27,6 @@ public class BranchServiceTest {
     private BranchService branchService;
 
     @Autowired
-    private AddressService addressService;
-
-    @Autowired
     private BranchRepository branchRepository;
 
     private Branch branch;
