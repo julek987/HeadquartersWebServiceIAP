@@ -38,7 +38,6 @@ public class AddressController {
                 throw new ResourceNotFoundException("Branch with ID " + addressDTO.branchId + " not found");
             }
 
-            newAddress.setBranchUserId(addressDTO.branchUserId);
             newAddress.setCountry(addressDTO.country);
             newAddress.setRegion(addressDTO.region);
             newAddress.setCity(addressDTO.city);
@@ -63,6 +62,7 @@ public class AddressController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updateAddress(@PathVariable long id, @Valid @RequestBody AddressDTO addressDTO) {
         try {
+
             Address existingAddress = addressService.getAddress(id);
             if (existingAddress == null) {
                 throw new ResourceNotFoundException("Address with ID " + id + " not found");
@@ -73,7 +73,6 @@ public class AddressController {
                 throw new ResourceNotFoundException("Branch with ID " + addressDTO.branchId + " not found");
             }
 
-            existingAddress.setBranchUserId(addressDTO.branchUserId);
             existingAddress.setCountry(addressDTO.country);
             existingAddress.setRegion(addressDTO.region);
             existingAddress.setCity(addressDTO.city);

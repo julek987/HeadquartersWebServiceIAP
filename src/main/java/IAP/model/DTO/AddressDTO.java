@@ -9,7 +9,6 @@ public class AddressDTO {
 
     public Long id;
     public Long branchId;
-    public Long branchUserId;
 
     @NotBlank(message = "Country is required")
     @Size(max = 100, message = "Country must be less than 100 characters")
@@ -44,7 +43,6 @@ public class AddressDTO {
     public AddressDTO(Address address) {
         this.id = address.getId();
         this.branchId = address.getBranch() != null ? address.getBranch().getId() : null;
-        this.branchUserId = address.getBranchUserId();
         this.country = address.getCountry();
         this.region = address.getRegion();
         this.city = address.getCity();

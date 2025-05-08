@@ -15,8 +15,7 @@ public class BranchDTO {
     public String name;
 
     public boolean active;
-
-    @NotNull(message = "Address ID is required")
+    
     public Long addressId;
 
     public Long managerId;

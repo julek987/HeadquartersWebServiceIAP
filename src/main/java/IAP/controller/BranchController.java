@@ -10,6 +10,7 @@ import IAP.service.AddressService;
 import IAP.service.AppUserService;
 import IAP.service.BranchService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Null;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -62,14 +63,22 @@ public class BranchController {
     @PostMapping
     public ResponseEntity<?> addBranch(@Valid @RequestBody BranchDTO branchDTO) {
         try {
-            Address address = addressService.getAddress(branchDTO.addressId);
-            if (address == null) {
-                throw new ResourceNotFoundException("Address with ID " + branchDTO.addressId + " not found");
+            Address address = null;
+            AppUser manager = null;
+
+            if (branchDTO.addressId != null) {
+                address = addressService.getAddress(branchDTO.addressId);
+                if (address == null) {
+                    throw new ResourceNotFoundException("Address with ID " + branchDTO.addressId + " not found");
+                }
             }
 
-            AppUser manager = appUserService.getAppUser(branchDTO.managerId);
-            if (manager == null) {
-                throw new ResourceNotFoundException("Manager with ID " + branchDTO.managerId + " not found");
+            if (branchDTO.managerId != null) {
+                manager = appUserService.getAppUser(branchDTO.managerId);
+
+                if (manager == null) {
+                    throw new ResourceNotFoundException("Manager with ID " + branchDTO.managerId + " not found");
+                }
             }
 
             Branch newBranch = new Branch();

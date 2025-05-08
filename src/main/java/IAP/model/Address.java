@@ -16,9 +16,6 @@ public class Address {
     @JoinColumn
     private Branch branch;
 
-    @Column(name = "branch_user_id", nullable = false)
-    private long branchUserId;
-
     @Column(name = "country", nullable = false)
     private String country;
 
@@ -62,14 +59,6 @@ public class Address {
 
     public void setBranch(Branch branch) {
         this.branch = branch;
-    }
-
-    public long getBranchUserId() {
-        return branchUserId;
-    }
-
-    public void setBranchUserId(long branchUserId) {
-        this.branchUserId = branchUserId;
     }
 
     public String getCountry() {
