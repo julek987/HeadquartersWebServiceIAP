@@ -23,7 +23,6 @@ public class BranchServiceImpl implements BranchService {
 
     @Override
     public void addBranch(Branch branch) throws InvalidDataException {
-        validateBranch(branch);
         branch.setCreatedAt(LocalDateTime.now());
         branch.setModifiedAt(LocalDateTime.now());
         branchRepository.save(branch);
