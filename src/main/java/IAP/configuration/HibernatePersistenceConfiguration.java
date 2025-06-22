@@ -43,9 +43,17 @@ public class HibernatePersistenceConfiguration {
 
         BasicDataSource dataSource = new BasicDataSource();
         dataSource.setDriverClassName("org.postgresql.Driver");
-        dataSource.setUrl("jdbc:postgresql://pg-internet-app-headquarters-headquarters-iap.j.aivencloud.com:20665/defaultdb?ssl=require");
-        dataSource.setUsername(credentials.getProperty("username"));
-        dataSource.setPassword(credentials.getProperty("password"));
+
+//        ------ production DB connection ------
+//        dataSource.setUrl("jdbc:postgresql://pg-internet-app-headquarters-headquarters-iap.j.aivencloud.com:20665/defaultdb?ssl=require");
+//        dataSource.setUsername(credentials.getProperty("username"));
+//        dataSource.setPassword(credentials.getProperty("password"));
+
+//        ------ development DB connection ------
+        dataSource.setUrl("jdbc:postgresql://localhost:5432/postgres");
+        dataSource.setUsername("mateusz");
+        dataSource.setPassword("");
+
         return dataSource;
     }
 
