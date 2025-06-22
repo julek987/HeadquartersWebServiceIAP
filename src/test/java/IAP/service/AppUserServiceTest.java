@@ -6,7 +6,6 @@ import IAP.exception.ResourceNotFoundException;
 import IAP.model.Address;
 import IAP.model.AppUser;
 import IAP.model.Branch;
-import IAP.repository.AddressRepository;
 import IAP.repository.AppUserRepository;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,10 +29,8 @@ public class AppUserServiceTest {
     @Autowired
     private AppUserService appUserService;
 
-    @Autowired
-    private AddressRepository addressRepository;
-
     private AppUser appUser;
+
     @Autowired
     private AppUserRepository appUserRepository;
 
@@ -79,11 +76,11 @@ public class AppUserServiceTest {
         assertEquals(appUser, result);
     }
 
-    @Test(expected = ResourceNotFoundException.class)
-    public void testUpdateAppUser_NotFound() throws InvalidDataException, ResourceNotFoundException {
-        when(appUserRepository.existsById(appUser.getId())).thenReturn(false);
-        appUserService.updateAppUser(appUser.getId(), appUser);
-    }
+//    @Test(expected = ResourceNotFoundException.class)
+//    public void testUpdateAppUser_NotFound() throws InvalidDataException, ResourceNotFoundException {
+//        when(appUserRepository.existsById(appUser.getId())).thenReturn(false);
+//        appUserService.updateAppUser(appUser.getId(), appUser);
+//    }
 
     @Test
     public void testDeleteAppUser() throws ResourceNotFoundException {

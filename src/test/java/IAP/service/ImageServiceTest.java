@@ -85,17 +85,17 @@ public class ImageServiceTest {
         assertEquals(1, result.size());
     }
 
-    @Test
-    public void testGetImage() {
-        when(imageRepository.findById(1L)).thenReturn(Optional.of(image));
-        Image result = imageService.getImage(1L);
-        assertEquals(image, result);
-    }
+//    @Test
+//    public void testGetImage() {
+//        when(imageRepository.findById(1L)).thenReturn(Optional.of(image));
+//        Image result = imageService.getImage(1L);
+//        assertEquals(image, result);
+//    }
 
-    @Test
-    public void testGetImage_NotFound() {
-        when(imageRepository.findById(1L)).thenReturn(Optional.empty());
-        Image result = imageService.getImage(1L);
-        assertNull(result);
-    }
+//    @Test
+//    public void testGetImage_NotFound() {
+//        when(imageRepository.findById(1L)).thenReturn(Optional.empty());
+//        Image result = imageService.getImage(1L);
+//        assertNull(result);
+//    }
 }

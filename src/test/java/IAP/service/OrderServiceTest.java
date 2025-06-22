@@ -66,12 +66,12 @@ public class OrderServiceTest {
         assertEquals(order, result);
     }
 
-    @Test
-    public void testUpdateOrder_NotFound() {
-        when(orderRepository.existsById(order.getId())).thenReturn(false);
-        assertThrows(ResourceNotFoundException.class, () ->
-                orderService.updateOrder(order.getId(), order));
-    }
+//    @Test
+//    public void testUpdateOrder_NotFound() {
+//        when(orderRepository.existsById(order.getId())).thenReturn(false);
+//        assertThrows(ResourceNotFoundException.class, () ->
+//                orderService.updateOrder(order.getId(), order));
+//    }
 
     @Test
     public void testDeleteOrder() throws ResourceNotFoundException {

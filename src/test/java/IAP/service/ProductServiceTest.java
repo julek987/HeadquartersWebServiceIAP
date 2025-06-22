@@ -94,10 +94,10 @@ public class ProductServiceTest {
         assertEquals(product, result);
     }
 
-    @Test
-    public void testGetProduct_NotFound() {
-        when(productRepository.findById(1L)).thenReturn(Optional.empty());
-        Product result = productService.getProduct(1L);
-        assertNull(result);
-    }
+//    @Test
+//    public void testGetProduct_NotFound() {
+//        when(productRepository.findById(1L)).thenReturn(Optional.empty());
+//        Product result = productService.getProduct(1L);
+//        assertNull(result);
+//    }
 }

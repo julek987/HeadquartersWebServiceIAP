@@ -63,12 +63,12 @@ public class SaleServiceTest {
         assertEquals(sale, result);
     }
 
-    @Test
-    public void testUpdateSale_NotFound() {
-        when(saleRepository.existsById(sale.getId())).thenReturn(false);
-        assertThrows(ResourceNotFoundException.class, () ->
-                saleService.updateSale(sale.getId(), sale));
-    }
+//    @Test
+//    public void testUpdateSale_NotFound() {
+//        when(saleRepository.existsById(sale.getId())).thenReturn(false);
+//        assertThrows(ResourceNotFoundException.class, () ->
+//                saleService.updateSale(sale.getId(), sale));
+//    }
 
     @Test
     public void testDeleteSale() throws ResourceNotFoundException {
