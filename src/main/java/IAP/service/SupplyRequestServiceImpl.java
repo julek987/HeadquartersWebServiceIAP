@@ -31,6 +31,11 @@ public class SupplyRequestServiceImpl implements SupplyRequestService {
     }
 
     @Override
+    public List<SupplyRequest> listSupplyRequestByStatus(String status) throws ResourceNotFoundException {
+        return supplyRequestRepository.findAllByStatus(status);
+    }
+
+    @Override
     public SupplyRequest addRequest(SupplyRequest supplyRequest) throws InvalidDataException, ResourceNotFoundException {
         return supplyRequestRepository.save(supplyRequest);
     }

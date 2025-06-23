@@ -33,6 +33,12 @@ public class SupplyOrderServiceImpl implements SupplyOrderService {
     }
 
     @Override
+    public List<SupplyOrder> listSupplyOrderBySupplyRequestId(long supplyRequestId) throws ResourceNotFoundException {
+        return supplyOrderRepository.findAllBySupplyRequestId(supplyRequestId);
+    }
+
+
+    @Override
     public SupplyOrder addOrder(SupplyOrder supplyOrder) throws InvalidDataException, ResourceNotFoundException {
         return supplyOrderRepository.save(supplyOrder);
     }

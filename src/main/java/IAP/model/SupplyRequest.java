@@ -10,7 +10,6 @@ public class SupplyRequest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "sale_id")
     private Long id;
 
     @ManyToOne
@@ -18,8 +17,7 @@ public class SupplyRequest {
 
     private String status;
 
-    @ManyToOne
-    private AppUser reviewedBy;
+    private String reviewedBy;
 
     private LocalDateTime reviewedAt;
 
@@ -39,8 +37,8 @@ public class SupplyRequest {
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
 
-    public AppUser getReviewedBy() { return reviewedBy; }
-    public void setReviewedBy(AppUser reviewedBy) { this.reviewedBy = reviewedBy; }
+    public String getReviewedBy() { return reviewedBy; }
+    public void setReviewedBy(String reviewedBy) { this.reviewedBy = reviewedBy; }
 
     public LocalDateTime getReviewedAt() { return reviewedAt; }
     public void setReviewedAt(LocalDateTime reviewedAt) { this.reviewedAt = reviewedAt; }
