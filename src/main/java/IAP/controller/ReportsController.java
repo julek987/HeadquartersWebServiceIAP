@@ -57,7 +57,7 @@ public class ReportsController {
         List<Sale> filteredSales = sales.stream()
                 .filter(sale -> {
                     LocalDateTime date = sale.getSaleDate();
-                    return date != null && !date.isBefore(startOfMonth) && !date.isAfter(endOfMonth);
+                    return date != null && !date.isBefore(startOfMonth) && !date.isAfter(endOfMonth) && sale.getBranch().getId() == branchId;
                 })
                 .toList();
 
@@ -86,13 +86,8 @@ public class ReportsController {
             );
         }
 
-        // Step 4: Total quantity sold
-        long totalQuantity = productSales.values().stream()
-                .mapToLong(BranchSalesReportDTO.ProductSalesOverview::getQuantity)
-                .sum();
-
         // Step 5: Build report
-        BranchSalesReportDTO report = new BranchSalesReportDTO(totalQuantity, productSales);
+        BranchSalesReportDTO report = new BranchSalesReportDTO((long) filteredSales.size() , productSales);
         return ResponseEntity.ok(report);
     }
 
