@@ -15,10 +15,6 @@ public class Order {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "branch_id", nullable = false)
-    private Branch branch;
-
-    @ManyToOne
     @JoinColumn(name = "sale_id", nullable = false)
     private Sale sale;
 
@@ -46,10 +42,6 @@ public class Order {
     public void setId(Long id) {
         this.id = id;
     }
-
-    public Branch getBranch() {return branch;}
-
-    public void setBranch(Branch branch) {this.branch = branch;}
 
     public Product getProduct() {return product;}
 

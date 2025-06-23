@@ -32,7 +32,6 @@ public class OrderDTO {
 
     public OrderDTO(Order order) {
         this.id = order.getId();
-        this.branchId = order.getBranch() != null ? order.getBranch().getId() : null;
         this.saleId = order.getSale() != null ? order.getSale().getId() : null;
         this.productId = order.getProduct() != null ? order.getProduct().getId() : null;
         this.quantitySold = order.getQuantitySold();

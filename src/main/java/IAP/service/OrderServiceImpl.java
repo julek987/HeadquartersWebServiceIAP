@@ -35,7 +35,6 @@ public class OrderServiceImpl implements OrderService {
         Order existingOrder = orderRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found with id: " + id));
 
-        existingOrder.setBranch(order.getBranch());
         existingOrder.setProduct(order.getProduct());
         existingOrder.setSale(order.getSale());
         existingOrder.setQuantitySold(order.getQuantitySold());
@@ -65,9 +64,6 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private void validateOrder(Order order) throws InvalidDataException {
-        if (order.getBranch() == null) {
-            throw new InvalidDataException("Branch is required");
-        }
         if (order.getProduct() == null) {
             throw new InvalidDataException("Product is required");
         }

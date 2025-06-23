@@ -39,7 +39,6 @@ public class OrderServiceTest {
     public void setup() {
         order = new Order();
         order.setId(1L);
-        order.setBranch(new Branch());
         order.setSale(new Sale());
         order.setProduct(new Product());
         order.setQuantitySold(3);

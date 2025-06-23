@@ -54,7 +54,6 @@ public class OrderController {
             }
 
             Order newOrder = new Order();
-            newOrder.setBranch(branch);
             newOrder.setProduct(product);
             newOrder.setSale(sale);
             newOrder.setQuantitySold(orderDTO.quantitySold);
@@ -96,7 +95,6 @@ public class OrderController {
                 throw new ResourceNotFoundException("Sale with ID " + orderDTO.saleId + " not found");
             }
 
-            existingOrder.setBranch(branch);
             existingOrder.setProduct(product);
             existingOrder.setSale(sale);
             existingOrder.setQuantitySold(orderDTO.quantitySold);

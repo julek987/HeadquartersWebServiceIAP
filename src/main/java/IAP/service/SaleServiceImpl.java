@@ -34,7 +34,6 @@ public class SaleServiceImpl implements SaleService {
                 .orElseThrow(() -> new ResourceNotFoundException("Sale not found with id: " + id));
 
         existingSale.setBranch(sale.getBranch());
-        existingSale.setAppUser(sale.getAppUser());
         existingSale.setSaleDate(sale.getSaleDate());
         existingSale.setAnnotations(sale.getAnnotations());
         existingSale.setModifiedAt(LocalDateTime.now());
@@ -64,9 +63,6 @@ public class SaleServiceImpl implements SaleService {
     private void validateSale(Sale sale) throws InvalidDataException {
         if (sale.getBranch() == null) {
             throw new InvalidDataException("Branch is required");
-        }
-        if (sale.getAppUser() == null) {
-            throw new InvalidDataException("User is required");
         }
         if (sale.getSaleDate() == null) {
             throw new InvalidDataException("Sale date is required");

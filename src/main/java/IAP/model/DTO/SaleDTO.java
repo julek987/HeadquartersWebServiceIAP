@@ -27,7 +27,6 @@ public class SaleDTO {
     public SaleDTO(Sale sale) {
         this.id = sale.getId();
         this.branchId = sale.getBranch() != null ? sale.getBranch().getId() : null;
-        this.appUserId = sale.getAppUser() != null ? sale.getAppUser().getId() : null;
         this.saleDate = sale.getSaleDate();
         this.annotations = sale.getAnnotations();
         this.createdAt = sale.getCreatedAt();

@@ -19,10 +19,6 @@ public class Sale {
     @JoinColumn(name = "branch_id", nullable = false)
     private Branch branch;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private AppUser appUser;
-
     @Column(name = "sale_date", nullable = false)
     private LocalDateTime saleDate;
 
@@ -50,14 +46,6 @@ public class Sale {
 
     public void setBranch(Branch branch) {
         this.branch = branch;
-    }
-
-    public AppUser getAppUser() {
-        return appUser;
-    }
-
-    public void setAppUser(AppUser appUser) {
-        this.appUser = appUser;
     }
 
     public LocalDateTime getSaleDate() {

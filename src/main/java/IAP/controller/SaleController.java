@@ -47,7 +47,6 @@ public class SaleController {
 
             Sale newSale = new Sale();
             newSale.setBranch(branch);
-            newSale.setAppUser(appUser);
             newSale.setSaleDate(saleDTO.saleDate);
             newSale.setAnnotations(saleDTO.annotations);
             newSale.setCreatedAt(LocalDateTime.now());
@@ -83,7 +82,6 @@ public class SaleController {
             }
 
             existingSale.setBranch(branch);
-            existingSale.setAppUser(appUser);
             existingSale.setSaleDate(saleDTO.saleDate);
             existingSale.setAnnotations(saleDTO.annotations);
             existingSale.setModifiedAt(LocalDateTime.now());

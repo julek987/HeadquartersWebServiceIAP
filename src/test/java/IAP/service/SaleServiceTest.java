@@ -38,7 +38,6 @@ public class SaleServiceTest {
         sale = new Sale();
         sale.setId(1L);
         sale.setBranch(new Branch());
-        sale.setAppUser(new AppUser());
         sale.setSaleDate(LocalDateTime.now());
         sale.setAnnotations("First sale of the day");
         sale.setCreatedAt(LocalDateTime.now());
