@@ -23,10 +23,10 @@ public class Order {
     private Product product;
 
     @Column(name = "quantity_sold", nullable = false)
-    private Integer quantitySold;
+    private Long quantitySold;
 
     @Column(name = "sale_price", nullable = false, precision = 10, scale = 2)
-    private BigDecimal salePrice;
+    private Double salePrice;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
@@ -51,17 +51,17 @@ public class Order {
 
     public void setSale(Sale sale) {this.sale = sale;}
 
-    public Integer getQuantitySold() {return quantitySold;}
+    public Long getQuantitySold() {return quantitySold;}
 
-    public void setQuantitySold(Integer quantitySold) {
+    public void setQuantitySold(Long quantitySold) {
         this.quantitySold = quantitySold;
     }
 
-    public BigDecimal getSalePrice() {
+    public Double getSalePrice() {
         return salePrice;
     }
 
-    public void setSalePrice(BigDecimal salePrice) {
+    public void setSalePrice(Double salePrice) {
         this.salePrice = salePrice;
     }
 

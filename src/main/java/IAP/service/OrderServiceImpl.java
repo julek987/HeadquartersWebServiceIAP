@@ -3,6 +3,7 @@ package IAP.service;
 import IAP.exception.InvalidDataException;
 import IAP.exception.ResourceNotFoundException;
 import IAP.model.Order;
+import IAP.model.Sale;
 import IAP.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -63,6 +64,11 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found with id: " + id));
     }
 
+    @Override
+    public List<Order> listOrderBySale(Sale sale) {
+        return orderRepository.findAllBySale(sale);
+    }
+
     private void validateOrder(Order order) throws InvalidDataException {
         if (order.getProduct() == null) {
             throw new InvalidDataException("Product is required");
@@ -73,7 +79,7 @@ public class OrderServiceImpl implements OrderService {
         if (order.getQuantitySold() == null || order.getQuantitySold() < 1) {
             throw new InvalidDataException("Quantity must be at least 1");
         }
-        if (order.getSalePrice() == null || order.getSalePrice().compareTo(BigDecimal.ZERO) <= 0) {
+        if (order.getSalePrice() == null || order.getSalePrice().compareTo(0d) <= 0) {
             throw new InvalidDataException("Price must be greater than 0");
         }
     }

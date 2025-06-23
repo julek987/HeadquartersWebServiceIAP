@@ -41,8 +41,8 @@ public class OrderServiceTest {
         order.setId(1L);
         order.setSale(new Sale());
         order.setProduct(new Product());
-        order.setQuantitySold(3);
-        order.setSalePrice(new BigDecimal("99.99"));
+        order.setQuantitySold(3L);
+        order.setSalePrice(99.99d);
         order.setCreatedAt(LocalDateTime.now());
         order.setModifiedAt(LocalDateTime.now());
 

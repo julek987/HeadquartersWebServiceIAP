@@ -3,6 +3,8 @@ package IAP.service;
 import IAP.exception.InvalidDataException;
 import IAP.exception.ResourceNotFoundException;
 import IAP.model.Order;
+import IAP.model.Sale;
+
 import java.util.List;
 
 public interface OrderService {
@@ -11,4 +13,5 @@ public interface OrderService {
     void deleteOrder(long id) throws ResourceNotFoundException;
     List<Order> listOrders();
     Order getOrder(long id) throws ResourceNotFoundException;
+    List<Order> listOrderBySale(Sale sale);
 }

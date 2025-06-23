@@ -19,11 +19,11 @@ public class OrderDTO {
 
     @NotNull(message = "Quantity is required")
     @Min(value = 1, message = "Quantity must be at least 1")
-    public Integer quantitySold;
+    public Long quantitySold;
 
     @NotNull(message = "Price is required")
     @DecimalMin(value = "0.01", message = "Price must be greater than 0")
-    public BigDecimal salePrice;
+    public Double salePrice;
 
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
