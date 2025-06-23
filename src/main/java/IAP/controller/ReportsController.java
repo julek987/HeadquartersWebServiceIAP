@@ -97,27 +97,48 @@ public class ReportsController {
             @PathVariable Integer year,
             @PathVariable Integer month) {
 
-        Map<Long, TotalSalesOverviewReportDTO.BranchSalesOverview>  sales = new HashMap<>();
-        sales.put(
-                1L,
-                new TotalSalesOverviewReportDTO.BranchSalesOverview(
-                        10L, 123L, 1500d
-                )
-        );
-        sales.put(
-                2L,
-                new TotalSalesOverviewReportDTO.BranchSalesOverview(
-                        50L, 554L, 55432.94d
-                )
-        );
-        sales.put(
-                3L,
-                new TotalSalesOverviewReportDTO.BranchSalesOverview(
-                        3L, 50L, 10500.50d
-                )
-        );
+        LocalDateTime startOfMonth = LocalDateTime.of(year, month, 1, 0, 0);
+        LocalDateTime endOfMonth = startOfMonth
+                .with(TemporalAdjusters.lastDayOfMonth())
+                .withHour(23).withMinute(59).withSecond(59);
 
-        return ResponseEntity.ok(new TotalSalesOverviewReportDTO(sales));
+        List<Sale> sales = saleService.listSales();
+
+        // Filter sales in given month
+        List<Sale> filteredSales = sales.stream()
+                .filter(sale -> {
+                    LocalDateTime date = sale.getSaleDate();
+                    return date != null && !date.isBefore(startOfMonth) && !date.isAfter(endOfMonth);
+                })
+                .toList();
+
+        Map<Long, TotalSalesOverviewReportDTO.BranchSalesOverview> reportMap = new HashMap<>();
+
+        for (Sale sale : filteredSales) {
+            Long branchId = sale.getBranch().getId();
+            List<Order> orders = orderService.listOrderBySale(sale);
+
+            long totalQuantity = orders.stream()
+                    .mapToLong(Order::getQuantitySold)
+                    .sum();
+
+            double totalRevenue = orders.stream()
+                    .mapToDouble(order -> order.getQuantitySold() * order.getSalePrice())
+                    .sum();
+
+            reportMap.merge(
+                    branchId,
+                    new TotalSalesOverviewReportDTO.BranchSalesOverview(1L, totalQuantity, totalRevenue),
+                    (oldVal, newVal) -> new TotalSalesOverviewReportDTO.BranchSalesOverview(
+                            oldVal.getTotalBranchSales() + newVal.getTotalBranchSales(),
+                            oldVal.getTotalBranchProductsSold() + newVal.getTotalBranchProductsSold(),
+                            oldVal.getTotalBranchRevenue() + newVal.getTotalBranchRevenue()
+                    )
+            );
+        }
+
+        return ResponseEntity.ok(new TotalSalesOverviewReportDTO(reportMap));
     }
+
 
 }
