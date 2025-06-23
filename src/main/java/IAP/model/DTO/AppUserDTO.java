@@ -64,7 +64,6 @@ public class AppUserDTO {
     public AppUserDTO(AppUser appUser) {
         this.id = appUser.getId();
         this.branchId = appUser.getBranch() != null ? appUser.getBranch().getId() : null;
-        this.branchUserId = appUser.getBranchUserId();
         this.addressId = appUser.getAddress() != null ? appUser.getAddress().getId() : null;
         this.active = appUser.isActive();
         this.firstName = appUser.getFirstName();

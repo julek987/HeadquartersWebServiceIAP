@@ -12,10 +12,6 @@ public class Address {
     @Column(name = "address_id")
     private long id;
 
-    @OneToOne
-    @JoinColumn
-    private Branch branch;
-
     @Column(name = "country", nullable = false)
     private String country;
 
@@ -51,14 +47,6 @@ public class Address {
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public Branch getBranch() {
-        return branch;
-    }
-
-    public void setBranch(Branch branch) {
-        this.branch = branch;
     }
 
     public String getCountry() {

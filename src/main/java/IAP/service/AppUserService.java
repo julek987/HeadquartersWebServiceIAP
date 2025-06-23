@@ -11,4 +11,7 @@ public interface AppUserService {
     void deleteAppUser(long id) throws ResourceNotFoundException;
     List<AppUser> listAppUsers();
     AppUser getAppUser(long id) throws ResourceNotFoundException;
+
+    List<AppUser> listManagers()  throws ResourceNotFoundException;
+    List<AppUser> listDirectors(long id) throws ResourceNotFoundException;
 }

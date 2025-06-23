@@ -42,7 +42,6 @@ public class AddressDTO {
 
     public AddressDTO(Address address) {
         this.id = address.getId();
-        this.branchId = address.getBranch() != null ? address.getBranch().getId() : null;
         this.country = address.getCountry();
         this.region = address.getRegion();
         this.city = address.getCity();

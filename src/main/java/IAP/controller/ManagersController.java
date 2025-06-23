@@ -9,6 +9,7 @@ import IAP.model.DTO.AppUserDTO;
 import IAP.service.AddressService;
 import IAP.service.AppUserService;
 import IAP.service.BranchService;
+import IAP.service.ImageService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,22 +20,53 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/users")
-public class AppUserController {
+@RequestMapping("/api/managerctrl")
+public class ManagersController {
 
     private final AppUserService appUserService;
-    private final AddressService addressService;
     private final BranchService branchService;
+    private final AddressService addressService;
 
     @Autowired
-    public AppUserController(AppUserService appUserService, AddressService addressService, BranchService branchService) {
+    public ManagersController(
+            AppUserService appUserService,
+            BranchService branchService,
+            AddressService addressService
+    ) {
         this.appUserService = appUserService;
-        this.addressService = addressService;
         this.branchService = branchService;
+        this.addressService = addressService;
+    }
+
+    @GetMapping()
+    public ResponseEntity<List<AppUserDTO>> listManagers() {
+        List<AppUserDTO> managerDTOs = appUserService.listManagers().stream()
+                .map(AppUserDTO::new)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(managerDTOs);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getManager(@PathVariable long id) {
+        try {
+            AppUser user = appUserService.getAppUser(id);
+            if (user.getRole() != 0) {
+                return ResponseEntity
+                        .status(HttpStatus.FORBIDDEN)
+                        .body("Access denied: user is not a manager.");
+            }
+
+            user.setLogin("");
+            user.setPassword("");
+            return ResponseEntity.ok(new AppUserDTO(user));
+        } catch (ResourceNotFoundException e) {
+            throw e;
+        }
     }
 
     @PostMapping
-    public ResponseEntity<?> addAppUser(@Valid @RequestBody AppUserDTO appUserDTO) {
+    public ResponseEntity<?> addManager(@Valid @RequestBody AppUserDTO appUserDTO) {
         try {
             Address address = addressService.getAddressById(String.valueOf(appUserDTO.addressId));
             if (address == null) {
@@ -52,6 +84,8 @@ public class AppUserController {
             newUser.setPassword(appUserDTO.password);
             newUser.setAddress(address);
             newUser.setBranch(branch);
+            newUser.setRole(0);
+            newUser.setActive(true);
 
             appUserService.addAppUser(newUser);
             AppUserDTO savedAppUserDTO = new AppUserDTO(newUser);
@@ -65,7 +99,7 @@ public class AppUserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateAppUser(@PathVariable long id, @Valid @RequestBody AppUserDTO appUserDTO) {
+    public ResponseEntity<?> updateManager(@PathVariable long id, @Valid @RequestBody AppUserDTO appUserDTO) {
         try {
             Address address = addressService.getAddressById(String.valueOf(appUserDTO.addressId));
             if (address == null) {
@@ -99,22 +133,4 @@ public class AppUserController {
         }
     }
 
-    @GetMapping
-    public ResponseEntity<List<AppUserDTO>> listAppUsers() {
-        List<AppUser> users = appUserService.listAppUsers();
-        List<AppUserDTO> userDTOs = users.stream()
-                .map(AppUserDTO::new)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(userDTOs);
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getAppUser(@PathVariable long id) {
-        try {
-            AppUser user = appUserService.getAppUser(id);
-            return ResponseEntity.ok(new AppUserDTO(user));
-        } catch (ResourceNotFoundException e) {
-            throw e;
-        }
-    }
 }

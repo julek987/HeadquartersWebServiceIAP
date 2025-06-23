@@ -86,6 +86,18 @@ public class AppUserServiceImpl implements AppUserService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
     }
 
+    @Override
+    public List<AppUser> listManagers() throws ResourceNotFoundException {
+        return appUserRepository.findByRole(0)
+                .orElseThrow(() -> new ResourceNotFoundException("Managers not found"));
+    }
+
+    @Override
+    public List<AppUser> listDirectors(long id) throws ResourceNotFoundException {
+        return appUserRepository.findByRole(1)
+                .orElseThrow(() -> new ResourceNotFoundException("Directors not found"));
+    }
+
     private void validateAppUser(AppUser appUser) throws InvalidDataException {
         if (!StringUtils.hasText(appUser.getFirstName())) {
             throw new InvalidDataException("First name is required");

@@ -38,7 +38,6 @@ public class AddressServiceTest {
     public void setup() {
         address = new Address();
         address.setId(1L); // Make sure the ID is set to match your mock
-        address.setBranch(new Branch());
         address.setCountry("Polska");
         address.setRegion("Łódzkie");
         address.setCity("Łódź");

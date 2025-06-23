@@ -18,9 +18,6 @@ public class AppUser {
     @JoinColumn(name = "branch_id", nullable = false)
     private Branch branch;
 
-    @Column(name = "branch_user_id", nullable = false)
-    private long branchUserId;
-
     @Column(name = "active", nullable = false)
     private boolean active;
 
@@ -60,7 +57,7 @@ public class AppUser {
 
 
     // mapped
-    @OneToOne(mappedBy = "manager",  cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "manager",  cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Branch managedBranch;
 
     @OneToMany(mappedBy = "addedBy", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -80,14 +77,6 @@ public class AppUser {
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public long getBranchUserId() {
-        return branchUserId;
-    }
-
-    public void setBranchUserId(long branchUserId) {
-        this.branchUserId = branchUserId;
     }
 
     public boolean isActive() {

@@ -39,7 +39,6 @@ public class AppUserServiceTest {
         appUser = new AppUser();
         appUser.setId(1L);
         appUser.setBranch(new Branch());
-        appUser.setBranchUserId(1);
 
         appUser.setActive(true);
         appUser.setFirstName("firstName");

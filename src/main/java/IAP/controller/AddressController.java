@@ -33,10 +33,6 @@ public class AddressController {
     public ResponseEntity<?> addAddress(@Valid @RequestBody AddressDTO addressDTO) {
         try {
             Address newAddress = new Address();
-            newAddress.setBranch(branchService.getBranch(addressDTO.branchId));
-            if (newAddress.getBranch() == null) {
-                throw new ResourceNotFoundException("Branch with ID " + addressDTO.branchId + " not found");
-            }
 
             newAddress.setCountry(addressDTO.country);
             newAddress.setRegion(addressDTO.region);
@@ -66,11 +62,6 @@ public class AddressController {
             Address existingAddress = addressService.getAddress(id);
             if (existingAddress == null) {
                 throw new ResourceNotFoundException("Address with ID " + id + " not found");
-            }
-
-            existingAddress.setBranch(branchService.getBranch(addressDTO.branchId));
-            if (existingAddress.getBranch() == null) {
-                throw new ResourceNotFoundException("Branch with ID " + addressDTO.branchId + " not found");
             }
 
             existingAddress.setCountry(addressDTO.country);
