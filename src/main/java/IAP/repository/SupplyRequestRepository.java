@@ -13,4 +13,5 @@ import java.util.Optional;
 public interface SupplyRequestRepository extends JpaRepository<SupplyRequest, Long> {
     Optional<SupplyRequest> findById(long id);
     List<SupplyRequest> findAllByStatus(String status);
+    boolean existsByBranchIdAndBranchRequestID(long branchId, long branchRequestId);
 }

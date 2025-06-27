@@ -12,7 +12,7 @@ public class SupplyRequestDecisionDTO {
     public SupplyRequestDecisionDTO() {}
 
     public SupplyRequestDecisionDTO(String status, String annotation) {
-        this.status = status;
+        this.status     = status;
         this.annotation = annotation;
     }
 

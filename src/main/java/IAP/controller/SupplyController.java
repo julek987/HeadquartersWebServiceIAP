@@ -25,6 +25,7 @@ import IAP.service.SupplyRequestService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -36,12 +37,15 @@ public class SupplyController {
 
     private final SupplyRequestService  supplyRequestService;
     private final SupplyOrderService    supplyOrderService;
+    private final RestTemplate          restTemplate;
+
 
     public SupplyController(
-            SupplyRequestService supplyRequestService,
-            SupplyOrderService supplyOrderService) {
+            SupplyRequestService    supplyRequestService,
+            SupplyOrderService      supplyOrderService) {
         this.supplyRequestService   = supplyRequestService;
         this.supplyOrderService     = supplyOrderService;
+        this.restTemplate           = new  RestTemplate();
     }
 
     // statuses:
@@ -49,7 +53,7 @@ public class SupplyController {
     // - accepted
     // - rejected
     // list all supply requests - active and inactive
-    @GetMapping("/")
+    @GetMapping()
     public ResponseEntity<List<SupplyRequestDTO>> listSupplyRequests(){
 
         List<SupplyRequest> listSupplyRequest = supplyRequestService.listSupplyRequest();
@@ -100,32 +104,35 @@ public class SupplyController {
         SupplyRequest supplyRequest = supplyRequestService.getSupplyRequest(id);
 
         if (supplyRequest == null) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Supply Request with id " + id + " does not exist");
         }
 
         if (supplyRequest.getReviewedAt() != null) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body("This supply request has already been reviewed.");
+                    .body("This supply request has already been reviewed. It can not be updated anymore.");
         }
 
         if (
-                !supplyRequestDecisionDTO.status.equals("accepted") &&
-                !supplyRequestDecisionDTO.status.equals("rejected")) {
+                !SupplyRequest.Status.valueOf(supplyRequestDecisionDTO.status).equals(SupplyRequest.Status.ACCEPTED) &&
+                !SupplyRequest.Status.valueOf(supplyRequestDecisionDTO.status).equals(SupplyRequest.Status.REJECTED)) {
             return ResponseEntity.badRequest().body("Invalid decision status.");
         }
 
-        supplyRequest.setStatus(supplyRequestDecisionDTO.status);
+        supplyRequest.setStatus(SupplyRequest.Status.valueOf(supplyRequestDecisionDTO.status));
         supplyRequest.setAnnotation(supplyRequestDecisionDTO.annotation);
         // TODO: get the user
-        supplyRequest.setReviewedBy("Michał Głuś");
+        supplyRequest.setReviewedBy("[System]");
 
         supplyRequest.setReviewedAt(LocalDateTime.now());
         supplyRequest.setModifiedAt(LocalDateTime.now());
 
         supplyRequestService.updateRequest(supplyRequest.getId(), supplyRequest);
 
-        // TODO: send request to appropriate branch with the decision
-        // request.send(BRANCH_03, supplyRequest)
+        boolean isAccepted = SupplyRequest.Status.valueOf(supplyRequestDecisionDTO.status).equals(SupplyRequest.Status.ACCEPTED);
+        String decision    = isAccepted ? "accept" : "reject";
+        String updateUrl   = "http://localhost:8081/api/supply-requests/" + supplyRequest.getBranchRequestID() + "/" + decision;
+        restTemplate.postForEntity(updateUrl, null, Void.class);
 
         return new ResponseEntity<>(supplyRequest, HttpStatus.CREATED);
 
