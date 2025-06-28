@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/managerctrl")
+@RequestMapping("/api/manager-controller")
 public class ManagersController {
 
     private final AppUserService appUserService;
@@ -114,7 +114,7 @@ public class ManagersController {
             existingUser.setPassword(appUserDTO.password);
             existingUser.setAddress(address);
 
-            appUserService.addAppUser(existingUser);
+            appUserService.updateAppUser(existingUser.getId(), existingUser);
             AppUserDTO savedAppUserDTO = new AppUserDTO(existingUser);
             return new ResponseEntity<>(savedAppUserDTO, HttpStatus.CREATED);
         } catch (ResourceNotFoundException | InvalidDataException e) {

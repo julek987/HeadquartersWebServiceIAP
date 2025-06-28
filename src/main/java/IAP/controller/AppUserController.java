@@ -81,7 +81,7 @@ public class AppUserController {
             existingUser.setPassword(appUserDTO.password);
             existingUser.setAddress(address);
 
-            appUserService.addAppUser(existingUser);
+            appUserService.updateAppUser(existingUser.getId(), existingUser);
             AppUserDTO savedAppUserDTO = new AppUserDTO(existingUser);
             return new ResponseEntity<>(savedAppUserDTO, HttpStatus.CREATED);
         } catch (ResourceNotFoundException | InvalidDataException e) {
