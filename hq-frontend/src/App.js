@@ -10,6 +10,8 @@ import './App.css';
 import Header from './components/Layout/Header/Header';
 import Footer from './components/Layout/Footer/Footer';
 import About from "./components/About/About";
+import DirectorDashboard from "./components/Dashboard/Director/DirectorDashboard";
+import AdminDashboard from "./components/Dashboard/Admin/AdminDashboard";
 
 
 // Protected Route component with role checking
@@ -67,16 +69,20 @@ function App() {
                         <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
 
                         {/*<Route path="/user-dashboard" element={<ProtectedRoute allowedRoles={[0]}><UserDashboard /></ProtectedRoute>} />*/}
-                        {/*<Route path="/manager-dashboard" element={<ProtectedRoute allowedRoles={[1]}><ManagerDashboard /></ProtectedRoute>} />*/}
-                        {/*<Route path="/admin-dashboard" element={<ProtectedRoute allowedRoles={[2]}><AdminDashboard /></ProtectedRoute>} />*/}
+
+
                         {/*<Route path="/products-for-sales" element={<ProtectedRoute allowedRoles={[0]}><ProductsPageforSales /></ProtectedRoute>} />*/}
                         {/*<Route path="/checkout" element={<ProtectedRoute allowedRoles={[0]}><CheckoutPage /></ProtectedRoute>} />*/}
                         {/*<Route path="/sales-analytics" element={<ProtectedRoute allowedRoles={[1]}><SalesAnalytics /></ProtectedRoute>} />*/}
+
+                        <Route path="/director-dashboard" element={<ProtectedRoute allowedRoles={[0]}><DirectorDashboard /></ProtectedRoute>} />
+                        <Route path="/admin-dashboard" element={<ProtectedRoute allowedRoles={[1]}><AdminDashboard /></ProtectedRoute>} />
 
                         <Route path="/dashboard" element={<ProtectedRoute><DashboardRedirect /></ProtectedRoute>} />
 
                         {/*<Route path="/unauthorized" element={<div className="not-found"><h2>Access Denied</h2><p>You don't have permission to access this page.</p></div>} />*/}
 
+                        {/*<Route path="/" element={authUtils.isAuthenticated() ? <DashboardRedirect /> : <Navigate to="/login" />} />*/}
                         <Route path="/" element={authUtils.isAuthenticated() ? <DashboardRedirect /> : <Navigate to="/login" />} />
 
                         <Route path="/about" element={<About />} />

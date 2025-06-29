@@ -53,13 +53,10 @@ const Login = () => {
             const userRole = response.user.role;
 
             switch(userRole) {
-                case 0: // User role
-                    navigate('/user-dashboard');
+                case 0: // Director role
+                    navigate('/director-dashboard');
                     break;
-                case 1: // Manager role
-                    navigate('/manager-dashboard');
-                    break;
-                case 2: // Admin role
+                case 1: // Admin role
                     navigate('/admin-dashboard');
                     break;
                 default:

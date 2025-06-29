@@ -1,0 +1,479 @@
+/* Luxe & Elegant Manager Dashboard Styles */
+.dashboard-container {
+    min-height: calc(100vh - 80px);
+    background: linear-gradient(135deg, #f5f5f5 0%, #e5e5e5 50%, #f5f5f5 100%);
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.dashboard-container::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(210, 134, 106, 0.08) 0%, transparent 70%);
+    animation: float 25s ease-in-out infinite;
+    z-index: 0;
+}
+
+@keyframes float {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    33% { transform: translate(-20px, 30px) rotate(120deg); }
+    66% { transform: translate(30px, -20px) rotate(240deg); }
+}
+
+.welcome-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    position: relative;
+    z-index: 1;
+}
+
+.welcome-header h1 {
+    font-size: 2.5rem;
+    font-weight: 300;
+    letter-spacing: 3px;
+    margin: 0 0 1rem 0;
+    color: #322052;
+    text-transform: uppercase;
+    font-family: 'Georgia', serif;
+    position: relative;
+}
+
+.welcome-header h1::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(90deg, #d2866a, #322052, #d2866a);
+    border-radius: 2px;
+}
+
+.welcome-message {
+    font-size: 1.2rem;
+    color: #322052;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+    margin: 0;
+    opacity: 0.8;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+}
+
+.dashboard-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(210, 134, 106, 0.2);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow:
+            0 20px 40px rgba(50, 32, 82, 0.1),
+            0 0 80px rgba(210, 134, 106, 0.05);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.dashboard-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #d2866a, #322052, #d2866a);
+}
+
+.dashboard-card:hover {
+    transform: translateY(-8px);
+    box-shadow:
+            0 25px 50px rgba(50, 32, 82, 0.15),
+            0 0 100px rgba(210, 134, 106, 0.08);
+}
+
+.card-header {
+    padding: 2rem 2rem 1rem 2rem;
+    background: linear-gradient(135deg, rgba(245, 245, 245, 0.5), rgba(229, 229, 229, 0.5));
+    border-bottom: 1px solid rgba(210, 134, 106, 0.1);
+}
+
+.card-header h3 {
+    font-size: 1.5rem;
+    font-weight: 400;
+    letter-spacing: 2px;
+    margin: 0;
+    color: #322052;
+    text-transform: uppercase;
+    font-family: 'Georgia', serif;
+    position: relative;
+}
+
+.card-header h3::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    width: 40px;
+    height: 2px;
+    background: linear-gradient(90deg, #d2866a, #322052);
+}
+
+.card-content {
+    padding: 2rem;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(210, 134, 106, 0.1);
+    transition: all 0.3s ease;
+}
+
+.info-row:last-child {
+    border-bottom: none;
+}
+
+.info-row:hover {
+    background: rgba(210, 134, 106, 0.05);
+    margin: 0 -1rem;
+    padding: 1rem;
+    border-radius: 10px;
+}
+
+.info-row .label {
+    font-weight: 500;
+    color: #322052;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+}
+
+.info-row .value {
+    color: #d2866a;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    font-size: 1rem;
+}
+
+.action-buttons {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+.action-btn {
+    padding: 1.2rem 1.5rem;
+    border: none;
+    border-radius: 15px;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.action-btn.primary {
+    background: linear-gradient(135deg, #322052 0%, #2a1a42 100%);
+    color: #ffffff;
+    box-shadow: 0 4px 15px rgba(50, 32, 82, 0.3);
+}
+
+.action-btn.secondary {
+    background: linear-gradient(135deg, #d2866a 0%, #b8725a 100%);
+    color: #ffffff;
+    box-shadow: 0 4px 15px rgba(210, 134, 106, 0.3);
+}
+
+.action-btn.accent {
+    background: linear-gradient(135deg, rgba(229, 229, 229, 0.9), rgba(245, 245, 245, 0.9));
+    color: #322052;
+    border: 2px solid rgba(210, 134, 106, 0.4);
+    box-shadow: 0 4px 15px rgba(210, 134, 106, 0.2);
+}
+
+.action-btn.danger {
+    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+    color: #ffffff;
+    box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+}
+
+.action-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.3s ease;
+    z-index: 0;
+}
+
+.action-btn:hover {
+    transform: translateY(-4px);
+    filter: brightness(1.1);
+}
+
+.action-btn:hover::before {
+    left: 0;
+}
+
+.action-btn:active {
+    transform: translateY(-2px);
+}
+
+/* Manager-specific styling for action buttons */
+.manager-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+.manager-btn {
+    padding: 1.2rem 1.5rem;
+    border: none;
+    border-radius: 15px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.manager-btn.manage-products {
+    background: linear-gradient(135deg, #322052 0%, #2a1a42 100%);
+    color: #ffffff;
+    box-shadow: 0 4px 15px rgba(50, 32, 82, 0.3);
+}
+
+.manager-btn.create-report {
+    background: linear-gradient(135deg, #d2866a 0%, #b8725a 100%);
+    color: #ffffff;
+    box-shadow: 0 4px 15px rgba(210, 134, 106, 0.3);
+}
+
+.manager-btn.manage-salesmen {
+    background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+    color: #ffffff;
+    box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
+}
+
+.manager-btn.end-shift {
+    background: linear-gradient(135deg, rgba(229, 229, 229, 0.9), rgba(245, 245, 245, 0.9));
+    color: #322052;
+    border: 2px solid rgba(210, 134, 106, 0.4);
+    box-shadow: 0 4px 15px rgba(210, 134, 106, 0.2);
+}
+
+.manager-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.3s ease;
+    z-index: 0;
+}
+
+.manager-btn:hover {
+    transform: translateY(-4px);
+    filter: brightness(1.1);
+}
+
+.manager-btn:hover::before {
+    left: 0;
+}
+
+.manager-btn:active {
+    transform: translateY(-2px);
+}
+
+/* Stats grid styling */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 1.5rem 1rem;
+    background: linear-gradient(135deg, rgba(245, 245, 245, 0.7), rgba(229, 229, 229, 0.7));
+    border-radius: 15px;
+    border: 1px solid rgba(210, 134, 106, 0.2);
+    transition: all 0.3s ease;
+}
+
+.stat-item:hover {
+    transform: translateY(-5px);
+    background: linear-gradient(135deg, rgba(210, 134, 106, 0.1), rgba(245, 245, 245, 0.9));
+    box-shadow: 0 8px 25px rgba(50, 32, 82, 0.1);
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #322052;
+    margin-bottom: 0.5rem;
+    font-family: 'Georgia', serif;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: #d2866a;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 500;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+        max-width: 600px;
+    }
+
+    .dashboard-container {
+        padding: 1.5rem;
+    }
+
+    .welcome-header h1 {
+        font-size: 2.2rem;
+        letter-spacing: 2px;
+    }
+
+    .welcome-message {
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .dashboard-container {
+        padding: 1rem;
+    }
+
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .welcome-header {
+        margin-bottom: 2rem;
+    }
+
+    .welcome-header h1 {
+        font-size: 2rem;
+        letter-spacing: 1.5px;
+    }
+
+    .welcome-message {
+        font-size: 1rem;
+    }
+
+    .card-header,
+    .card-content {
+        padding: 1.5rem;
+    }
+
+    .card-header h3 {
+        font-size: 1.3rem;
+        letter-spacing: 1.5px;
+    }
+
+    .info-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+        text-align: left;
+    }
+
+    .action-btn,
+    .manager-btn {
+        padding: 1rem 1.2rem;
+        font-size: 0.95rem;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .dashboard-container {
+        padding: 0.5rem;
+        min-height: calc(100vh - 120px);
+    }
+
+    .welcome-header h1 {
+        font-size: 1.7rem;
+        letter-spacing: 1px;
+    }
+
+    .welcome-message {
+        font-size: 0.95rem;
+    }
+
+    .dashboard-card {
+        border-radius: 15px;
+    }
+
+    .card-header,
+    .card-content {
+        padding: 1rem;
+    }
+
+    .card-header h3 {
+        font-size: 1.2rem;
+        letter-spacing: 1px;
+    }
+
+    .action-btn,
+    .manager-btn {
+        padding: 0.9rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .stat-number {
+        font-size: 2rem;
+    }
+}
