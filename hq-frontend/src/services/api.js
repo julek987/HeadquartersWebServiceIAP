@@ -1,84 +1,105 @@
-// Base API configuration
-const API_BASE_URL = 'http://localhost:8080/api';
+import axios from 'axios';
 
-// Generic API call function
-const apiCall = async (endpoint, options = {}) => {
-    try {
-        const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-            headers: {
-                'Content-Type': 'application/json',
-                ...options.headers,
-            },
-            ...options,
-        });
+// Base URL for your Spring backend
+const BASE_URL = 'http://localhost:8080/api';
 
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
+// Create axios instance
+const api = axios.create({
+    baseURL: BASE_URL,
+    headers: {
+        'Content-Type': 'application/json'
+    }
+});
 
-        return await response.json();
-    } catch (error) {
-        console.error('API call failed:', error);
-        throw error;
+// Auth utilities for storing token and user info
+export const authUtils = {
+    setAuthData: (token, userInfo) => {
+        // Store in memory (not localStorage due to Claude.ai restrictions)
+        window.authData = { token, user: userInfo };
+    },
+
+    getAuthData: () => {
+        return window.authData || null;
+    },
+
+    clearAuthData: () => {
+        delete window.authData;
+    },
+
+    isAuthenticated: () => {
+        return window.authData && window.authData.token;
+    },
+
+    getUserRole: () => {
+        const authData = window.authData;
+        return authData && authData.user ? authData.user.role : null;
+    },
+
+    getUsername: () => {
+        const authData = window.authData;
+        return authData && authData.user ? authData.user.username : null;
+    },
+
+    // Additional helper methods
+    getUser: () => {
+        const authData = window.authData;
+        return authData ? authData.user : null;
+    },
+
+    getToken: () => {
+        const authData = window.authData;
+        return authData ? authData.token : null;
+    },
+
+    // ADD THIS MISSING LOGOUT METHOD
+    logout: () => {
+        // Clear auth data
+        authUtils.clearAuthData();
+
+        // Redirect to login page
+        window.location.href = '/login';
+
+        // Or if you're using React Router's navigate, you can modify this
+        // to accept a navigate function as parameter
     }
 };
 
-// API functions for your controllers
-export const imageAPI = {
-    getAll: () => apiCall('/image'),
-    getById: (id) => apiCall(`/image/${id}`),
-    create: (imageData) => apiCall('/image', {
-        method: 'POST',
-        body: JSON.stringify(imageData),
-    }),
-    update: (id, imageData) => apiCall(`/image/${id}`, {
-        method: 'PUT',
-        body: JSON.stringify(imageData),
-    }),
-    delete: (id) => apiCall(`/image/${id}`, {
-        method: 'DELETE',
-    }),
-};
+// Auth API endpoints
+export const authAPI = {
+    // Login endpoint
+    login: async (credentials) => {
+        const response = await api.post('/auth/login', {
+            username: credentials.username,
+            password: credentials.password
+        });
+        return response.data;
+    },
 
-export const addressAPI = {
-    getAll: () => apiCall('/addresses'),
-    getById: (id) => apiCall(`/addresses/${id}`),
-    create: (addressData) => apiCall('/addresses', {
-        method: 'POST',
-        body: JSON.stringify(addressData),
-    }),
-    update: (id, addressData) => apiCall(`/addresses/${id}`, {
-        method: 'PUT',
-        body: JSON.stringify(addressData),
-    }),
-    delete: (id) => apiCall(`/addresses/${id}`, {
-        method: 'DELETE',
-    }),
-};
+    // Register endpoint
+    register: async (userData) => {
+        return await api.post('/auth/register', userData);
+    },
 
-export const branchAPI = {
-    getAll: () => apiCall('/branch'),
-    getById: (id) => apiCall(`/branch/${id}`),
-    create: (branchData) => apiCall('/branch', {
-        method: 'POST',
-        body: JSON.stringify(branchData),
-    }),
-    update: (id, branchData) => apiCall(`/branch/${id}`, {
-        method: 'PUT',
-        body: JSON.stringify(branchData),
-    }),
-    delete: (id) => apiCall(`/branch/${id}`, {
-        method: 'DELETE',
-    }),
-};
+    // Get addresses for registration
+    getAddresses: async () => {
+        return await api.get('/auth/addresses');
+    },
 
-// Simple API call for welcome message
-export const getWelcomeMessage = async () => {
-    try {
-        const response = await fetch('http://localhost:8080/api/welcome');
-        return await response.text();
-    } catch (error) {
-        console.error('Failed to fetch welcome message:', error);
-        throw error;
+    // Optional: Add logout API call if your backend requires it
+    logout: async () => {
+        const token = authUtils.getToken();
+        if (token) {
+            try {
+                await api.post('/auth/logout', {}, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+            } catch (error) {
+                console.error('Logout API error:', error);
+                // Continue with client-side logout even if API fails
+            }
+        }
+
+        // Clear client-side auth data
+        authUtils.logout();
     }
 };

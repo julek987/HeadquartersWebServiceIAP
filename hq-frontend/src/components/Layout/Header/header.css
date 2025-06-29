@@ -1,0 +1,201 @@
+/* Luxe & Elegant Header Styles */
+.header {
+    background: linear-gradient(135deg, #f5f5f5 0%, #e5e5e5 100%);
+    border-bottom: 1px solid rgba(210, 180, 140, 0.2);
+    backdrop-filter: blur(10px);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+}
+
+.header-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 80px;
+}
+
+.header-brand {
+    flex-shrink: 0;
+}
+
+.header-brand a {
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.3s ease;
+}
+
+.header-brand a:hover {
+    transform: translateY(-1px);
+}
+
+.header-brand h1 {
+    font-size: 1.8rem;
+    font-weight: 300;
+    letter-spacing: 2px;
+    margin: 0;
+    color: #322052;
+    text-transform: uppercase;
+    font-family: 'Georgia', serif;
+    position: relative;
+}
+
+.header-brand h1::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #d2866a, #322052);
+    transition: width 0.3s ease;
+}
+
+.header-brand a:hover h1::after {
+    width: 100%;
+}
+
+.header-nav {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+.welcome-text {
+    font-size: 0.95rem;
+    color: #322052;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 25px;
+    border: 1px solid rgba(210, 134, 106, 0.2);
+    backdrop-filter: blur(5px);
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: #322052;
+    font-weight: 400;
+    font-size: 0.95rem;
+    letter-spacing: 0.5px;
+    padding: 0.75rem 1.5rem;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    background: transparent;
+    border: 1px solid transparent;
+}
+
+.nav-link::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, rgba(210, 134, 106, 0.1), rgba(50, 32, 82, 0.1));
+    transition: left 0.3s ease;
+    z-index: -1;
+}
+
+.nav-link:hover {
+    color: #322052;
+    border-color: rgba(210, 134, 106, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(210, 134, 106, 0.2);
+}
+
+.nav-link:hover::before {
+    left: 0;
+}
+
+.logout-btn {
+    background: linear-gradient(135deg, #322052 0%, #2a1a42 100%);
+    color: #ffffff;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 25px;
+    font-size: 0.95rem;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.logout-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, #d2866a, #322052);
+    transition: left 0.3s ease;
+    z-index: -1;
+}
+
+.logout-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(50, 32, 82, 0.3);
+}
+
+.logout-btn:hover::before {
+    left: 0;
+}
+
+.logout-btn:active {
+    transform: translateY(0);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .header-container {
+        padding: 0 1rem;
+        flex-direction: column;
+        min-height: auto;
+        gap: 1rem;
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+    }
+
+    .header-brand h1 {
+        font-size: 1.5rem;
+        letter-spacing: 1px;
+    }
+
+    .header-nav {
+        flex-direction: column;
+        gap: 1rem;
+        width: 100%;
+    }
+
+    .welcome-text {
+        text-align: center;
+        font-size: 0.9rem;
+    }
+
+    .nav-links {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .nav-link,
+    .logout-btn {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
+    }
+}

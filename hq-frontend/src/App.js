@@ -1,44 +1,96 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import './components/Layout/Header/header.css'
+import './components/Layout/Footer/footer.css'
+import Register from './components/Auth/Register/Register';
+import Login from './components/Auth/Login/Login';
+import Welcome from './components/Dashboard/Welcome';
+import { authUtils } from './services/api';
 import './App.css';
+import Header from './components/Layout/Header/Header';
+import Footer from './components/Layout/Footer/Footer';
+import About from "./components/About/About";
+
+
+// Protected Route component with role checking
+const ProtectedRoute = ({ children, allowedRoles = [] }) => {
+    const authData = authUtils.getAuthData();
+
+    if (!authUtils.isAuthenticated()) {
+        return <Navigate to="/login" />;
+    }
+
+    // If specific roles are required, check user role
+    if (allowedRoles.length > 0 && !allowedRoles.includes(authData.user.role)) {
+        return <Navigate to="/unauthorized" />;
+    }
+
+    return children;
+};
+
+// Public Route component (redirect to appropriate dashboard if already authenticated)
+const PublicRoute = ({ children }) => {
+    if (!authUtils.isAuthenticated()) {
+        return children;
+    }
+
+    // Redirect to role-specific dashboard
+    const userRole = authUtils.getUserRole();
+    switch(userRole) {
+        case 0: return <Navigate to="/user-dashboard" />;
+        case 1: return <Navigate to="/manager-dashboard" />;
+        case 2: return <Navigate to="/admin-dashboard" />;
+        default: return <Navigate to="/dashboard" />;
+    }
+};
+
+// Component to redirect authenticated users to their appropriate dashboard
+const DashboardRedirect = () => {
+    const userRole = authUtils.getUserRole();
+
+    switch(userRole) {
+        case 0: return <Navigate to="/user-dashboard" replace />;
+        case 1: return <Navigate to="/manager-dashboard" replace />;
+        case 2: return <Navigate to="/admin-dashboard" replace />;
+        default: return <Welcome />;
+    }
+};
 
 function App() {
-  const [message, setMessage] = useState('');
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    // Fetch welcome message from Spring Boot
-    fetch('http://localhost:8080/api/welcome')
-        .then(response => response.text())
-        .then(data => {
-          setMessage(data);
-          setLoading(false);
-        })
-        .catch(error => {
-          console.error('Error fetching data:', error);
-          setMessage('Welcome to your React App!');
-          setLoading(false);
-        });
-  }, []);
-
-  if (loading) {
     return (
-        <div className="App">
-          <header className="App-header">
-            <p>Loading...</p>
-          </header>
-        </div>
-    );
-  }
+        <Router>
+            <div className="App">
+                <Header />
+                <main className="main-content">
+                    <Routes>
+                        <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
+                        <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
 
-  return (
-      <div className="App">
-        <header className="App-header">
-          <h1>Welcome</h1>
-          <p>{message}</p>
-          <p>Your Spring Boot + React application is running!</p>
-        </header>
-      </div>
-  );
+                        {/*<Route path="/user-dashboard" element={<ProtectedRoute allowedRoles={[0]}><UserDashboard /></ProtectedRoute>} />*/}
+                        {/*<Route path="/manager-dashboard" element={<ProtectedRoute allowedRoles={[1]}><ManagerDashboard /></ProtectedRoute>} />*/}
+                        {/*<Route path="/admin-dashboard" element={<ProtectedRoute allowedRoles={[2]}><AdminDashboard /></ProtectedRoute>} />*/}
+                        {/*<Route path="/products-for-sales" element={<ProtectedRoute allowedRoles={[0]}><ProductsPageforSales /></ProtectedRoute>} />*/}
+                        {/*<Route path="/checkout" element={<ProtectedRoute allowedRoles={[0]}><CheckoutPage /></ProtectedRoute>} />*/}
+                        {/*<Route path="/sales-analytics" element={<ProtectedRoute allowedRoles={[1]}><SalesAnalytics /></ProtectedRoute>} />*/}
+
+                        <Route path="/dashboard" element={<ProtectedRoute><DashboardRedirect /></ProtectedRoute>} />
+
+                        {/*<Route path="/unauthorized" element={<div className="not-found"><h2>Access Denied</h2><p>You don't have permission to access this page.</p></div>} />*/}
+
+                        <Route path="/" element={authUtils.isAuthenticated() ? <DashboardRedirect /> : <Navigate to="/login" />} />
+
+                        <Route path="/about" element={<About />} />
+
+                        <Route path="*" element={<div className="not-found"><h2>Page Not Found</h2><p>The page you're looking for doesn't exist.</p></div>} />
+
+                        {/*<Route path="/users" element={<ProtectedRoute allowedRoles={[2]}><UserTable /></ProtectedRoute>} />*/}
+                        {/*<Route path="/users-readonly" element={<ProtectedRoute allowedRoles={[1]}><UserTableManager /></ProtectedRoute>} />*/}
+                    </Routes>
+                </main>
+                <Footer />
+            </div>
+        </Router>
+    );
 }
 
 export default App;
