@@ -25,7 +25,7 @@ public class Order {
     @Column(name = "quantity_sold", nullable = false)
     private Long quantitySold;
 
-    @Column(name = "sale_price", nullable = false, precision = 10, scale = 2)
+    @Column(name = "sale_price", nullable = false)
     private Double salePrice;
 
     @Column(name = "created_at", nullable = false)
