@@ -34,8 +34,8 @@ public class DailySupplyRequestScheduler {
 
     @Scheduled(cron = "0/30 * * * * ?") // every day at 08:00 AM
     public void getDailySupplyRequests() {
-        String branchRequestUrl = "http://localhost:8081/api/supply-requests";
-        String branchOrdersUrl = "http://localhost:8081/api/supply-orders";
+        String branchRequestUrl = "http://localhost:8080/api/supply-requests";
+        String branchOrdersUrl = "http://localhost:8080/api/supply-orders";
         System.out.println(LocalDateTime.now() + "| Fetching Supply Requests");
 
         try {
@@ -90,7 +90,7 @@ public class DailySupplyRequestScheduler {
                 }
 
                 // Step 4: Notify branch that request was reviewed
-                String updateUrl = "http://localhost:8081/api/supply-requests/" + dto.id + "/review";
+                String updateUrl = "http://localhost:8080/api/supply-requests/" + dto.id + "/review";
                 restTemplate.postForEntity(updateUrl, null, Void.class);
             }
 

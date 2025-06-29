@@ -131,7 +131,7 @@ public class SupplyController {
 
         boolean isAccepted = SupplyRequest.Status.valueOf(supplyRequestDecisionDTO.status).equals(SupplyRequest.Status.ACCEPTED);
         String decision    = isAccepted ? "accept" : "reject";
-        String updateUrl   = "http://localhost:8081/api/supply-requests/" + supplyRequest.getBranchRequestID() + "/" + decision;
+        String updateUrl   = "http://localhost:8080/api/supply-requests/" + supplyRequest.getBranchRequestID() + "/" + decision;
         restTemplate.postForEntity(updateUrl, null, Void.class);
 
         return new ResponseEntity<>(supplyRequest, HttpStatus.CREATED);
