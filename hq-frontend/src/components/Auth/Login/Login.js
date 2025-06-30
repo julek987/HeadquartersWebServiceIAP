@@ -131,9 +131,8 @@ const Login = () => {
 
                 <div className="test-credentials" style={{marginTop: '20px', padding: '15px', background: '#f0f8ff', borderRadius: '8px', fontSize: '14px'}}>
                     <h4>Test Credentials:</h4>
-                    <p><strong>User:</strong> usertest1 / TestUser@1</p>
-                    <p><strong>Manager:</strong> managertest / TestManager@1</p>
-                    <p><strong>Admin:</strong> admintest / TestAdmin@1</p>
+                    <p><strong>Director:</strong> Director1 / Director@2</p>
+                    <p><strong>Admin:</strong> Admin1 / AdminAdmin@2</p>
                 </div>
             </div>
         </div>

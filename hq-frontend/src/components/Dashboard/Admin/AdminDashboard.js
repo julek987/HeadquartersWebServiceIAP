@@ -33,9 +33,27 @@ const AdminDashboard = () => {
         console.log('Navigate to view all products');
     };
 
-    // If we're in user management view, render that component
+    // If we're in user management view, render that component with a back button
     if (currentView === 'userManagement') {
-        return <UserManagement onBack={handleBackToDashboard} />;
+        return (
+            <div>
+                <button
+                    onClick={handleBackToDashboard}
+                    style={{
+                        marginBottom: '20px',
+                        padding: '10px 20px',
+                        backgroundColor: '#007bff',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '4px',
+                        cursor: 'pointer'
+                    }}
+                >
+                    ← Back to Dashboard
+                </button>
+                <UserManagement />
+            </div>
+        );
     }
 
     // Main dashboard view

@@ -26,26 +26,38 @@ export const getRoleName = (roleId) => {
     }
 };
 
+// Initialize auth data safely
+if (typeof window !== 'undefined' && !window.authData) {
+    window.authData = null;
+}
+
 // Auth utilities for storing token and user info
 export const authUtils = {
     setAuthData: (token, userInfo) => {
         // Store in memory (not localStorage due to Claude.ai restrictions)
-        window.authData = { token, user: userInfo };
+        if (typeof window !== 'undefined') {
+            window.authData = { token, user: userInfo };
+        }
     },
 
     getAuthData: () => {
+        if (typeof window === 'undefined') return null;
         return window.authData || null;
     },
 
     clearAuthData: () => {
-        delete window.authData;
+        if (typeof window !== 'undefined') {
+            delete window.authData;
+        }
     },
 
     isAuthenticated: () => {
+        if (typeof window === 'undefined') return false;
         return window.authData && window.authData.token;
     },
 
     getUserRole: () => {
+        if (typeof window === 'undefined') return null;
         const authData = window.authData;
         return authData && authData.user ? authData.user.role : null;
     },
@@ -56,17 +68,20 @@ export const authUtils = {
     },
 
     getUsername: () => {
+        if (typeof window === 'undefined') return null;
         const authData = window.authData;
         return authData && authData.user ? authData.user.username : null;
     },
 
     // Additional helper methods
     getUser: () => {
+        if (typeof window === 'undefined') return null;
         const authData = window.authData;
         return authData ? authData.user : null;
     },
 
     getToken: () => {
+        if (typeof window === 'undefined') return null;
         const authData = window.authData;
         return authData ? authData.token : null;
     },
@@ -93,32 +108,71 @@ export const authUtils = {
         authUtils.clearAuthData();
 
         // Redirect to login page
-        window.location.href = '/login';
+        if (typeof window !== 'undefined') {
+            window.location.href = '/login';
+        }
 
         // Or if you're using React Router's navigate, you can modify this
         // to accept a navigate function as parameter
     }
 };
 
+// Ensure authUtils is properly initialized
+if (typeof authUtils === 'undefined') {
+    console.error('authUtils failed to initialize');
+}
+
 // Auth API endpoints
 export const authAPI = {
     // Login endpoint
     login: async (credentials) => {
-        const response = await api.post('/auth/login', {
-            username: credentials.username,
-            password: credentials.password
-        });
-        return response.data;
+        try {
+            const response = await api.post('/auth/login', {
+                username: credentials.username,
+                password: credentials.password
+            });
+            return response.data;
+        } catch (error) {
+            // Re-throw with a consistent error format
+            if (error.response && error.response.data) {
+                throw new Error(error.response.data);
+            }
+            throw new Error('Login failed');
+        }
     },
 
-    // Register endpoint
+    // Register endpoint - FIXED VERSION
     register: async (userData) => {
-        return await api.post('/auth/register', userData);
+        try {
+            const response = await api.post('/auth/register', userData);
+            return response.data; // Return just the data, not the full response
+        } catch (error) {
+            // Handle different types of error responses
+            if (error.response) {
+                // Server responded with error status
+                const errorMessage = error.response.data || `Registration failed with status ${error.response.status}`;
+                throw new Error(errorMessage);
+            } else if (error.request) {
+                // Request was made but no response received
+                throw new Error('No response from server. Please check your connection.');
+            } else {
+                // Something else happened
+                throw new Error('Registration failed: ' + error.message);
+            }
+        }
     },
 
     // Get addresses for registration
     getAddresses: async () => {
-        return await api.get('/auth/addresses');
+        try {
+            const response = await api.get('/auth/addresses');
+            return response.data;
+        } catch (error) {
+            if (error.response && error.response.data) {
+                throw new Error(error.response.data);
+            }
+            throw new Error('Failed to fetch addresses');
+        }
     },
 
     // Optional: Add logout API call if your backend requires it
@@ -137,6 +191,66 @@ export const authAPI = {
 
         // Clear client-side auth data
         authUtils.logout();
+    }
+};
+
+// User API endpoints
+export const userAPI = {
+    // Get all users
+    getUsers: async () => {
+        const token = authUtils.getToken();
+        const headers = {};
+        if (token) {
+            headers.Authorization = `Bearer ${token}`;
+        }
+        const response = await api.get('/users', { headers });
+        return response.data;
+    },
+
+    // Add a new user
+    addUser: async (userData) => {
+        const token = authUtils.getToken();
+        const headers = { 'Content-Type': 'application/json' };
+        if (token) {
+            headers.Authorization = `Bearer ${token}`;
+        }
+        const response = await api.post('/users', userData, { headers });
+        return response.data;
+    },
+
+    // Update user
+    updateUser: async (id, userData) => {
+        const token = authUtils.getToken();
+        const headers = { 'Content-Type': 'application/json' };
+        if (token) {
+            headers.Authorization = `Bearer ${token}`;
+        }
+        const response = await api.put(`/users/${id}`, userData, { headers });
+        return response.data;
+    },
+
+    // Delete user
+    deleteUser: async (id) => {
+        const token = authUtils.getToken();
+        const headers = {};
+        if (token) {
+            headers.Authorization = `Bearer ${token}`;
+        }
+        const response = await api.delete(`/users/${id}`, { headers });
+        return response.data;
+    }
+};
+
+// Address API endpoints
+export const addressAPI = {
+    getAddresses: async () => {
+        const token = authUtils.getToken();
+        const headers = {};
+        if (token) {
+            headers.Authorization = `Bearer ${token}`;
+        }
+        const response = await api.get('/addresses', { headers });
+        return response.data;
     }
 };
 

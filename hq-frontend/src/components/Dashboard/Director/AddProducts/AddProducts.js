@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { authUtils, productAPI, imageAPI } from '../../../../services/api';
+import './AddProducts.css'; // Import the CSS file
 
 const AddProducts = () => {
     const navigate = useNavigate();
@@ -19,6 +20,7 @@ const AddProducts = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitMessage, setSubmitMessage] = useState('');
     const [debugInfo, setDebugInfo] = useState('');
+    const [debugPanelOpen, setDebugPanelOpen] = useState(false);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -224,191 +226,136 @@ Method: ${error.config?.method?.toUpperCase() || 'Unknown'}
     };
 
     return (
-        <div style={{ maxWidth: '600px', margin: '0 auto', padding: '20px' }}>
-            <div style={{ marginBottom: '30px' }}>
+        <div className="add-products-container">
+            <div className="add-products-header">
                 <h1>Add New Product</h1>
                 <p>Fill in the details below to add a new product to the inventory.</p>
+            </div>
 
-                {/* Debug panel */}
-                <div style={{
-                    padding: '15px',
-                    backgroundColor: '#f8f9fa',
-                    borderRadius: '8px',
-                    marginBottom: '20px',
-                    border: '1px solid #dee2e6'
-                }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-                        <strong>Debug Panel</strong>
+            {/* Collapsible Debug panel */}
+            <div className="debug-panel">
+                <div className="debug-panel-header" onClick={() => setDebugPanelOpen(!debugPanelOpen)}>
+                    <h3>Details {debugPanelOpen ? '▼' : '▶'}</h3>
+                    {debugPanelOpen && (
                         <button
                             type="button"
-                            onClick={testConnection}
-                            style={{
-                                padding: '5px 10px',
-                                fontSize: '12px',
-                                backgroundColor: '#007bff',
-                                color: 'white',
-                                border: 'none',
-                                borderRadius: '4px',
-                                cursor: 'pointer'
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                testConnection();
                             }}
+                            className="debug-test-btn"
                         >
                             Test GET /api/product
                         </button>
-                    </div>
-                    <div style={{ fontSize: '12px', fontFamily: 'monospace' }}>
+                    )}
+                </div>
+                {debugPanelOpen && (
+                    <div className="debug-info">
                         <div><strong>User ID:</strong> {authData?.user?.id || 'Not found'}</div>
                         <div><strong>Has Token:</strong> {authData?.token ? 'Yes' : 'No'}</div>
                         <div><strong>Token (first 20 chars):</strong> {authData?.token ? authData.token.substring(0, 20) + '...' : 'None'}</div>
                         <div><strong>Proxy URL:</strong> /api/product</div>
                         <div><strong>Backend URL:</strong> http://localhost:8081/api/product</div>
                         {debugInfo && (
-                            <div style={{
-                                marginTop: '10px',
-                                padding: '10px',
-                                backgroundColor: debugInfo.includes('❌') ? '#ffebee' : '#e8f5e8',
-                                borderRadius: '4px',
-                                whiteSpace: 'pre-wrap'
-                            }}>
-                                {debugInfo}
-                            </div>
+                            <pre>{debugInfo}</pre>
                         )}
                     </div>
-                </div>
+                )}
             </div>
 
-            <form onSubmit={handleSubmit}>
-                <div style={{ marginBottom: '20px' }}>
-                    <label htmlFor="productName" style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
-                        Product Name *
-                    </label>
+            <form onSubmit={handleSubmit} className="add-products-form">
+                <div className="form-group">
+                    <label htmlFor="productName">Product Name *</label>
                     <input
                         type="text"
                         id="productName"
                         name="productName"
                         value={formData.productName}
                         onChange={handleInputChange}
-                        style={{
-                            width: '100%',
-                            padding: '10px',
-                            border: errors.productName ? '2px solid red' : '1px solid #ddd',
-                            borderRadius: '4px',
-                            fontSize: '16px'
-                        }}
+                        className={errors.productName ? 'error' : ''}
                         maxLength="200"
                         placeholder="Enter product name"
                     />
                     {errors.productName && (
-                        <span style={{ color: 'red', fontSize: '14px', marginTop: '5px', display: 'block' }}>
+                        <span className="error-message">
                             {errors.productName}
                         </span>
                     )}
                 </div>
 
-                <div style={{ marginBottom: '20px' }}>
-                    <label htmlFor="price" style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
-                        Price * ($)
-                    </label>
+                <div className="form-group">
+                    <label htmlFor="price">Price * ($)</label>
                     <input
                         type="number"
                         id="price"
                         name="price"
                         value={formData.price}
                         onChange={handleInputChange}
-                        style={{
-                            width: '100%',
-                            padding: '10px',
-                            border: errors.price ? '2px solid red' : '1px solid #ddd',
-                            borderRadius: '4px',
-                            fontSize: '16px'
-                        }}
+                        className={errors.price ? 'error' : ''}
                         step="0.01"
                         min="0.01"
                         placeholder="0.00"
                     />
                     {errors.price && (
-                        <span style={{ color: 'red', fontSize: '14px', marginTop: '5px', display: 'block' }}>
+                        <span className="error-message">
                             {errors.price}
                         </span>
                     )}
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '15px', marginBottom: '20px' }}>
-                    <div>
-                        <label htmlFor="width" style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
-                            Width * (cm)
-                        </label>
+                <div className="dimensions-grid">
+                    <div className="form-group">
+                        <label htmlFor="width">Width * (cm)</label>
                         <input
                             type="number"
                             id="width"
                             name="width"
                             value={formData.width}
                             onChange={handleInputChange}
-                            style={{
-                                width: '100%',
-                                padding: '10px',
-                                border: errors.width ? '2px solid red' : '1px solid #ddd',
-                                borderRadius: '4px',
-                                fontSize: '16px'
-                            }}
+                            className={errors.width ? 'error' : ''}
                             min="1"
                             placeholder="0"
                         />
                         {errors.width && (
-                            <span style={{ color: 'red', fontSize: '12px', marginTop: '3px', display: 'block' }}>
+                            <span className="error-message">
                                 {errors.width}
                             </span>
                         )}
                     </div>
 
-                    <div>
-                        <label htmlFor="depth" style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
-                            Depth * (cm)
-                        </label>
+                    <div className="form-group">
+                        <label htmlFor="depth">Depth * (cm)</label>
                         <input
                             type="number"
                             id="depth"
                             name="depth"
                             value={formData.depth}
                             onChange={handleInputChange}
-                            style={{
-                                width: '100%',
-                                padding: '10px',
-                                border: errors.depth ? '2px solid red' : '1px solid #ddd',
-                                borderRadius: '4px',
-                                fontSize: '16px'
-                            }}
+                            className={errors.depth ? 'error' : ''}
                             min="1"
                             placeholder="0"
                         />
                         {errors.depth && (
-                            <span style={{ color: 'red', fontSize: '12px', marginTop: '3px', display: 'block' }}>
+                            <span className="error-message">
                                 {errors.depth}
                             </span>
                         )}
                     </div>
 
-                    <div>
-                        <label htmlFor="height" style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
-                            Height * (cm)
-                        </label>
+                    <div className="form-group">
+                        <label htmlFor="height">Height * (cm)</label>
                         <input
                             type="number"
                             id="height"
                             name="height"
                             value={formData.height}
                             onChange={handleInputChange}
-                            style={{
-                                width: '100%',
-                                padding: '10px',
-                                border: errors.height ? '2px solid red' : '1px solid #ddd',
-                                borderRadius: '4px',
-                                fontSize: '16px'
-                            }}
+                            className={errors.height ? 'error' : ''}
                             min="1"
                             placeholder="0"
                         />
                         {errors.height && (
-                            <span style={{ color: 'red', fontSize: '12px', marginTop: '3px', display: 'block' }}>
+                            <span className="error-message">
                                 {errors.height}
                             </span>
                         )}
@@ -416,73 +363,42 @@ Method: ${error.config?.method?.toUpperCase() || 'Unknown'}
                 </div>
 
                 {/* Single Image URL field */}
-                <div style={{ marginBottom: '20px' }}>
-                    <label htmlFor="imageUrl" style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
-                        Product Image URL (Optional)
-                    </label>
+                <div className="form-group">
+                    <label htmlFor="imageUrl">Product Image URL (Optional)</label>
                     <input
                         type="url"
                         id="imageUrl"
                         name="imageUrl"
                         value={formData.imageUrl}
                         onChange={handleInputChange}
-                        style={{
-                            width: '100%',
-                            padding: '10px',
-                            border: errors.imageUrl ? '2px solid red' : '1px solid #ddd',
-                            borderRadius: '4px',
-                            fontSize: '16px'
-                        }}
+                        className={errors.imageUrl ? 'error' : ''}
                         placeholder="https://example.com/image.jpg"
                     />
                     {errors.imageUrl && (
-                        <span style={{ color: 'red', fontSize: '14px', marginTop: '5px', display: 'block' }}>
+                        <span className="error-message">
                             {errors.imageUrl}
                         </span>
                     )}
                 </div>
 
                 {submitMessage && (
-                    <div style={{
-                        padding: '10px',
-                        marginBottom: '20px',
-                        borderRadius: '4px',
-                        backgroundColor: submitMessage.includes('Error') ? '#ffebee' : '#e8f5e8',
-                        border: `1px solid ${submitMessage.includes('Error') ? '#f44336' : '#4caf50'}`,
-                        color: submitMessage.includes('Error') ? '#d32f2f' : '#2e7d32'
-                    }}>
+                    <div className={`submit-message ${submitMessage.includes('Error') ? 'submit-error' : 'submit-success'}`}>
                         {submitMessage}
                     </div>
                 )}
 
-                <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
+                <div className="form-actions">
                     <button
                         type="button"
                         onClick={handleCancel}
-                        style={{
-                            padding: '12px 20px',
-                            border: '1px solid #ddd',
-                            borderRadius: '4px',
-                            backgroundColor: '#f5f5f5',
-                            color: '#333',
-                            fontSize: '16px',
-                            cursor: 'pointer'
-                        }}
+                        className="btn btn-cancel"
                         disabled={isSubmitting}
                     >
                         Cancel
                     </button>
                     <button
                         type="submit"
-                        style={{
-                            padding: '12px 20px',
-                            border: 'none',
-                            borderRadius: '4px',
-                            backgroundColor: isSubmitting ? '#ccc' : '#007bff',
-                            color: 'white',
-                            fontSize: '16px',
-                            cursor: isSubmitting ? 'not-allowed' : 'pointer'
-                        }}
+                        className="btn btn-submit"
                         disabled={isSubmitting}
                     >
                         {isSubmitting ? 'Adding Product...' : 'Add Product'}
@@ -490,7 +406,7 @@ Method: ${error.config?.method?.toUpperCase() || 'Unknown'}
                 </div>
             </form>
 
-            <div style={{ marginTop: '20px', fontSize: '14px', color: '#666' }}>
+            <div className="form-footer">
                 <p>* Required fields</p>
                 <p>Note: Dimensions should be provided in centimeters as whole numbers.</p>
                 <p>Image URL is optional. If provided, it will be displayed with your product.</p>

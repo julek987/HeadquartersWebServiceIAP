@@ -33,8 +33,10 @@ public class AppUserServiceImpl implements AppUserService {
             throw new InvalidDataException("Email already exists");
         }
 
-        appUser.setCreatedAt(LocalDateTime.now());
-        appUser.setModifiedAt(LocalDateTime.now());
+        // Don't set timestamps here - let the controller handle them
+        // appUser.setCreatedAt(LocalDateTime.now());
+        // appUser.setModifiedAt(LocalDateTime.now());
+
         return appUserRepository.save(appUser);
     }
 
@@ -56,13 +58,23 @@ public class AppUserServiceImpl implements AppUserService {
             throw new InvalidDataException("Email already taken by another user");
         }
 
+        // Update fields from the passed appUser object
         existingUser.setFirstName(appUser.getFirstName());
         existingUser.setLastName(appUser.getLastName());
         existingUser.setEmail(appUser.getEmail());
         existingUser.setPhoneNumber(appUser.getPhoneNumber());
         existingUser.setLogin(appUser.getLogin());
-        existingUser.setPassword(appUser.getPassword());
-        existingUser.setModifiedAt(LocalDateTime.now());
+        existingUser.setRole(appUser.getRole());
+        existingUser.setAddress(appUser.getAddress());
+        existingUser.setBranch(appUser.getBranch());
+
+        // Only update password if it's provided and different
+        if (StringUtils.hasText(appUser.getPassword()) &&
+                !appUser.getPassword().equals(existingUser.getPassword())) {
+            existingUser.setPassword(appUser.getPassword());
+        }
+
+        existingUser.setModifiedAt(appUser.getModifiedAt()); // Use the timestamp from controller
 
         return appUserRepository.save(existingUser);
     }
@@ -115,8 +127,9 @@ public class AppUserServiceImpl implements AppUserService {
             throw new InvalidDataException("Login is required");
         }
 
-        if (!StringUtils.hasText(appUser.getPassword())) {
-            throw new InvalidDataException("Password is required");
+        // Password validation - allow empty password for updates
+        if (appUser.getPassword() != null && appUser.getPassword().trim().isEmpty()) {
+            throw new InvalidDataException("Password cannot be empty");
         }
     }
 }
