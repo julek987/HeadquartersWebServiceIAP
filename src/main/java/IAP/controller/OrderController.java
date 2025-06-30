@@ -38,10 +38,6 @@ public class OrderController {
     @PostMapping
     public ResponseEntity<?> addOrder(@Valid @RequestBody OrderDTO orderDTO) {
         try {
-            Branch branch = branchService.getBranch(orderDTO.branchId);
-            if (branch == null) {
-                throw new ResourceNotFoundException("Branch with ID " + orderDTO.branchId + " not found");
-            }
 
             Product product = productService.getProduct(orderDTO.productId);
             if (product == null) {
@@ -78,11 +74,6 @@ public class OrderController {
             Order existingOrder = orderService.getOrder(id);
             if (existingOrder == null) {
                 throw new ResourceNotFoundException("Order with ID " + id + " not found");
-            }
-
-            Branch branch = branchService.getBranch(orderDTO.branchId);
-            if (branch == null) {
-                throw new ResourceNotFoundException("Branch with ID " + orderDTO.branchId + " not found");
             }
 
             Product product = productService.getProduct(orderDTO.productId);

@@ -69,7 +69,7 @@ public class SupplyController {
     @GetMapping("/pending")
     public ResponseEntity<List<SupplyRequestDTO>> listPendingSupplyRequests(){
 
-        List<SupplyRequest> listSupplyRequest = supplyRequestService.listSupplyRequestByStatus("pending");
+        List<SupplyRequest> listSupplyRequest = supplyRequestService.listSupplyRequestByStatus(SupplyRequest.Status.PENDING);
         List<SupplyRequestDTO> listSupplyRequestDTO = new ArrayList<>();
 
         listSupplyRequest.forEach(supplyRequest -> {

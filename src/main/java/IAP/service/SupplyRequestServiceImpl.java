@@ -40,7 +40,7 @@ public class SupplyRequestServiceImpl implements SupplyRequestService {
     }
 
     @Override
-    public List<SupplyRequest> listSupplyRequestByStatus(String status) throws ResourceNotFoundException {
+    public List<SupplyRequest> listSupplyRequestByStatus(SupplyRequest.Status status) throws ResourceNotFoundException {
         return supplyRequestRepository.findAllByStatus(status);
     }
 

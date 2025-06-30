@@ -40,13 +40,9 @@ public class SaleController {
                 throw new ResourceNotFoundException("Branch with ID " + saleDTO.branchId + " not found");
             }
 
-            AppUser appUser = appUserService.getAppUser(saleDTO.appUserId);
-            if (appUser == null) {
-                throw new ResourceNotFoundException("AppUser with ID " + saleDTO.appUserId + " not found");
-            }
-
             Sale newSale = new Sale();
             newSale.setBranch(branch);
+            newSale.setBranchSaleId(saleDTO.branchSaleId);
             newSale.setSaleDate(saleDTO.saleDate);
             newSale.setAnnotations(saleDTO.annotations);
             newSale.setCreatedAt(LocalDateTime.now());
@@ -69,11 +65,6 @@ public class SaleController {
             Branch branch = branchService.getBranch(saleDTO.branchId);
             if (branch == null) {
                 throw new ResourceNotFoundException("Branch with ID " + saleDTO.branchId + " not found");
-            }
-
-            AppUser appUser = appUserService.getAppUser(saleDTO.appUserId);
-            if (appUser == null) {
-                throw new ResourceNotFoundException("AppUser with ID " + saleDTO.appUserId + " not found");
             }
 
             Sale existingSale = saleService.getSale(id);
