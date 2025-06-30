@@ -2,6 +2,7 @@ package IAP.model;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
 
 import java.time.LocalDateTime;
@@ -14,6 +15,9 @@ public class Sale {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "sale_id")
     private Long id;
+
+    @NotNull
+    private Long branchSaleId;
 
     @ManyToOne
     @JoinColumn(name = "branch_id", nullable = false)
@@ -35,15 +39,16 @@ public class Sale {
     public Long getId() {
         return id;
     }
-
     public void setId(Long id) {
         this.id = id;
     }
 
+    public Long getBranchSaleId() { return branchSaleId; }
+    public void setBranchSaleId(Long branchSaleId) { this.branchSaleId = branchSaleId; }
+
     public Branch getBranch() {
         return branch;
     }
-
     public void setBranch(Branch branch) {
         this.branch = branch;
     }
@@ -51,7 +56,6 @@ public class Sale {
     public LocalDateTime getSaleDate() {
         return saleDate;
     }
-
     public void setSaleDate(LocalDateTime saleDate) {
         this.saleDate = saleDate;
     }
@@ -59,7 +63,6 @@ public class Sale {
     public String getAnnotations() {
         return annotations;
     }
-
     public void setAnnotations(String annotations) {
         this.annotations = annotations;
     }
@@ -67,7 +70,6 @@ public class Sale {
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
-
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
@@ -75,8 +77,8 @@ public class Sale {
     public LocalDateTime getModifiedAt() {
         return modifiedAt;
     }
-
     public void setModifiedAt(LocalDateTime modifiedAt) {
         this.modifiedAt = modifiedAt;
     }
+
 }

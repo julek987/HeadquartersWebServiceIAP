@@ -2,6 +2,7 @@ package IAP.service;
 
 import IAP.exception.InvalidDataException;
 import IAP.exception.ResourceNotFoundException;
+import IAP.model.DTO.BranchOrderDTO;
 import IAP.model.Order;
 import IAP.model.Sale;
 
@@ -14,4 +15,8 @@ public interface OrderService {
     List<Order> listOrders();
     Order getOrder(long id) throws ResourceNotFoundException;
     List<Order> listOrderBySale(Sale sale);
+    List<Order> getOrdersBySale(Sale sale);
+    boolean ordersDiffer(List<Order> local, List<BranchOrderDTO> remote);
+    Order saveFromDTO(BranchOrderDTO dto, Sale sale);
+    void updateOrdersForSale(List<BranchOrderDTO> remoteOrders, Sale sale);
 }

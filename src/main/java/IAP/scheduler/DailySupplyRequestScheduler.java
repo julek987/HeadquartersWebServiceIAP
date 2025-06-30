@@ -32,7 +32,7 @@ public class DailySupplyRequestScheduler {
         this.supplyOrderService     = supplyOrderService;
     }
 
-    @Scheduled(cron = "0/30 * * * * ?") // every day at 08:00 AM
+    @Scheduled(cron = "0 0 * * * ?") // every day at 08:00 AM
     public void getDailySupplyRequests() {
         String branchRequestUrl = "http://localhost:8080/api/supply-requests";
         String branchOrdersUrl = "http://localhost:8080/api/supply-orders";
