@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-// Base URL for your Spring backend
-const BASE_URL = 'http://localhost:8080/api';
+// Base URL for your Spring backend - using proxy
+const BASE_URL = '/api'; // Changed to use proxy
 
 // Create axios instance
 const api = axios.create({
@@ -10,6 +10,21 @@ const api = axios.create({
         'Content-Type': 'application/json'
     }
 });
+
+// Role definitions for this project
+export const ROLES = {
+    DIRECTOR: 0,
+    ADMIN: 1
+};
+
+// Helper function to get role name
+export const getRoleName = (roleId) => {
+    switch(roleId) {
+        case ROLES.DIRECTOR: return 'Director';
+        case ROLES.ADMIN: return 'Admin';
+        default: return 'Unknown';
+    }
+};
 
 // Auth utilities for storing token and user info
 export const authUtils = {
@@ -35,6 +50,11 @@ export const authUtils = {
         return authData && authData.user ? authData.user.role : null;
     },
 
+    getUserRoleName: () => {
+        const role = authUtils.getUserRole();
+        return getRoleName(role);
+    },
+
     getUsername: () => {
         const authData = window.authData;
         return authData && authData.user ? authData.user.username : null;
@@ -51,7 +71,23 @@ export const authUtils = {
         return authData ? authData.token : null;
     },
 
-    // ADD THIS MISSING LOGOUT METHOD
+    // Check if user has specific role
+    hasRole: (requiredRole) => {
+        const userRole = authUtils.getUserRole();
+        return userRole === requiredRole;
+    },
+
+    // Check if user is Director
+    isDirector: () => {
+        return authUtils.hasRole(ROLES.DIRECTOR);
+    },
+
+    // Check if user is Admin
+    isAdmin: () => {
+        return authUtils.hasRole(ROLES.ADMIN);
+    },
+
+    // Logout method
     logout: () => {
         // Clear auth data
         authUtils.clearAuthData();
@@ -101,5 +137,150 @@ export const authAPI = {
 
         // Clear client-side auth data
         authUtils.logout();
+    }
+};
+
+// Product API endpoints
+export const productAPI = {
+    // Add a new product
+    addProduct: async (productData) => {
+        const token = authUtils.getToken();
+        const headers = {
+            'Content-Type': 'application/json'
+        };
+
+        // Add authorization header if token exists
+        if (token) {
+            headers.Authorization = `Bearer ${token}`;
+        }
+
+        const response = await api.post('/product', productData, { headers });
+        return response.data;
+    },
+
+    // Get all products
+    getProducts: async () => {
+        const token = authUtils.getToken();
+        const headers = {};
+
+        if (token) {
+            headers.Authorization = `Bearer ${token}`;
+        }
+
+        const response = await api.get('/product', { headers });
+        return response.data;
+    },
+
+    // Get product by ID
+    getProduct: async (id) => {
+        const token = authUtils.getToken();
+        const headers = {};
+
+        if (token) {
+            headers.Authorization = `Bearer ${token}`;
+        }
+
+        const response = await api.get(`/product/${id}`, { headers });
+        return response.data;
+    },
+
+    // Update product
+    updateProduct: async (id, productData) => {
+        const token = authUtils.getToken();
+        const headers = {
+            'Content-Type': 'application/json'
+        };
+
+        if (token) {
+            headers.Authorization = `Bearer ${token}`;
+        }
+
+        const response = await api.put(`/product/${id}`, productData, { headers });
+        return response.data;
+    },
+
+    // Delete product
+    deleteProduct: async (id) => {
+        const token = authUtils.getToken();
+        const headers = {};
+
+        if (token) {
+            headers.Authorization = `Bearer ${token}`;
+        }
+
+        const response = await api.delete(`/product/${id}`, { headers });
+        return response.data;
+    }
+};
+
+// Image API endpoints - Add these for your ProductsList component
+export const imageAPI = {
+    // Get all images
+    getImages: async () => {
+        const token = authUtils.getToken();
+        const headers = {};
+
+        if (token) {
+            headers.Authorization = `Bearer ${token}`;
+        }
+
+        const response = await api.get('/image', { headers });
+        return response.data;
+    },
+
+    // Get images for a specific product
+    getProductImages: async (productId) => {
+        const token = authUtils.getToken();
+        const headers = {};
+
+        if (token) {
+            headers.Authorization = `Bearer ${token}`;
+        }
+
+        const response = await api.get(`/image/product/${productId}`, { headers });
+        return response.data;
+    },
+
+    // Add image for a product
+    addImage: async (imageData) => {
+        const token = authUtils.getToken();
+        const headers = {
+            'Content-Type': 'application/json'
+        };
+
+        if (token) {
+            headers.Authorization = `Bearer ${token}`;
+        }
+
+        const response = await api.post('/image', imageData, { headers });
+        return response.data;
+    },
+
+    // Update image
+    updateImage: async (id, imageData) => {
+        const token = authUtils.getToken();
+        const headers = {
+            'Content-Type': 'application/json'
+        };
+
+        if (token) {
+            headers.Authorization = `Bearer ${token}`;
+        }
+
+        const response = await api.put(`/image/${id}`, imageData, { headers });
+        return response.data;
+    },
+
+    // Delete image
+    deleteImage: async (id) => {
+        const token = authUtils.getToken();
+        const headers = {};
+
+        if (token) {
+            headers.Authorization = `Bearer ${token}`;
+        }
+
+        const response = await api.delete(`/image/${id}`, { headers });
+        return response.data;
     }
 };

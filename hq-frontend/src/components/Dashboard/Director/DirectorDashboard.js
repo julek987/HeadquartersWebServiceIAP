@@ -17,11 +17,8 @@ const DirectorDashboard = () => {
     };
 
     const handleViewProducts = () => {
-        // Navigate to products list page
-        console.log('Viewing products...');
-        // Example: navigate('/products');
+        navigate('/products-list');
     };
-
 
     return (
         <div className="dashboard-container">
@@ -70,6 +67,12 @@ const DirectorDashboard = () => {
                                 onClick={handleSupplyRequests}
                             >
                                 Supply Requests
+                            </button>
+                            <button
+                                className="director-btn view-products"
+                                onClick={handleViewProducts}
+                            >
+                                Display Products
                             </button>
                         </div>
                     </div>
