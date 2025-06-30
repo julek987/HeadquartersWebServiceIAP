@@ -20,6 +20,10 @@ const DirectorDashboard = () => {
         navigate('/products-list');
     };
 
+    const handleViewReports = () => {
+        navigate('/reports');
+    };
+
     return (
         <div className="dashboard-container">
             <div className="welcome-header">
@@ -73,6 +77,12 @@ const DirectorDashboard = () => {
                                 onClick={handleViewProducts}
                             >
                                 Display Products
+                            </button>
+                            <button
+                                className="director-btn view-reports"
+                                onClick={handleViewReports}
+                            >
+                                View Reports
                             </button>
                         </div>
                     </div>

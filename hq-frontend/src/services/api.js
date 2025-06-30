@@ -284,3 +284,5 @@ export const imageAPI = {
         return response.data;
     }
 };
+
+export default api;

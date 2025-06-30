@@ -13,6 +13,7 @@ import About from "./components/About/About";
 import DirectorDashboard from "./components/Dashboard/Director/DirectorDashboard";
 import AdminDashboard from "./components/Dashboard/Admin/AdminDashboard";
 import AddProducts from "./components/Dashboard/Director/AddProducts/AddProducts";
+import Reports from "./components/Dashboard/Director/Reports/Reports";
 import ProductsList from "./components/Dashboard/Director/ProductsList/ProductsList"; // Add this import
 
 // Protected Route component with role checking
@@ -74,6 +75,7 @@ function App() {
                         {/* Product management routes - only for Directors */}
                         <Route path="/add-products" element={<ProtectedRoute allowedRoles={[0]}><AddProducts /></ProtectedRoute>} />
                         <Route path="/products-list" element={<ProtectedRoute allowedRoles={[0]}><ProductsList /></ProtectedRoute>} />
+                        <Route path="/reports" element={<ProtectedRoute allowedRoles={[0]}><Reports /></ProtectedRoute>} />
 
                         {/* General dashboard redirect */}
                         <Route path="/dashboard" element={<ProtectedRoute><DashboardRedirect /></ProtectedRoute>} />

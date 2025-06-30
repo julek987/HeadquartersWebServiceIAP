@@ -246,6 +246,82 @@
     transform: translateY(-2px);
 }
 
+/* Director-specific styling for action buttons */
+.director-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+.director-btn {
+    padding: 1.2rem 1.5rem;
+    border: none;
+    border-radius: 15px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.director-btn.add-products {
+    background: linear-gradient(135deg, #322052 0%, #2a1a42 100%);
+    color: #ffffff;
+    box-shadow: 0 4px 15px rgba(50, 32, 82, 0.3);
+}
+
+.director-btn.supply-requests {
+    background: linear-gradient(135deg, #d2866a 0%, #b8725a 100%);
+    color: #ffffff;
+    box-shadow: 0 4px 15px rgba(210, 134, 106, 0.3);
+}
+
+.director-btn.view-products {
+    background: linear-gradient(135deg, #322052 0%, #2a1a42 100%);
+    color: #ffffff;
+    box-shadow: 0 4px 15px rgba(50, 32, 82, 0.3);
+}
+
+.director-btn.view-reports {
+    background: linear-gradient(135deg, #d2866a 0%, #b8725a 100%);
+    color: #ffffff;
+    box-shadow: 0 4px 15px rgba(210, 134, 106, 0.3);
+}
+
+.director-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.3s ease;
+    z-index: 0;
+}
+
+.director-btn:hover {
+    transform: translateY(-4px);
+    filter: brightness(1.1);
+}
+
+.director-btn:hover::before {
+    left: 0;
+}
+
+.director-btn:active {
+    transform: translateY(-2px);
+}
+
 /* Manager-specific styling for action buttons */
 .manager-actions {
     display: grid;
@@ -424,7 +500,8 @@
     }
 
     .action-btn,
-    .manager-btn {
+    .manager-btn,
+    .director-btn {
         padding: 1rem 1.2rem;
         font-size: 0.95rem;
     }
@@ -464,7 +541,8 @@
     }
 
     .action-btn,
-    .manager-btn {
+    .manager-btn,
+    .director-btn {
         padding: 0.9rem 1rem;
         font-size: 0.9rem;
     }
