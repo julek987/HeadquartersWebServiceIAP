@@ -8,9 +8,6 @@ import java.time.LocalDateTime;
 public class OrderDTO {
     public Long id;
 
-    @NotNull(message = "Branch ID is required")
-    public Long branchId;
-
     @NotNull(message = "Sale ID is required")
     public Long saleId;
 
@@ -39,4 +36,25 @@ public class OrderDTO {
         this.createdAt = order.getCreatedAt();
         this.modifiedAt = order.getModifiedAt();
     }
+
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public Long getSaleId() { return saleId; }
+    public void setSaleId(Long saleId) { this.saleId = saleId; }
+
+    public Long getProductId() { return productId; }
+    public void setProductId(Long productId) { this.productId = productId; }
+
+    public Long getQuantitySold() { return quantitySold; }
+    public void setQuantitySold(Long quantitySold) { this.quantitySold = quantitySold; }
+
+    public Double getSalePrice() { return salePrice; }
+    public void setSalePrice(Double salePrice) { this.salePrice = salePrice; }
+
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    public LocalDateTime getModifiedAt() { return modifiedAt; }
+    public void setModifiedAt(LocalDateTime modifiedAt) { this.modifiedAt = modifiedAt; }
 }
