@@ -12,7 +12,8 @@ import Footer from './components/Layout/Footer/Footer';
 import About from "./components/About/About";
 import DirectorDashboard from "./components/Dashboard/Director/DirectorDashboard";
 import AdminDashboard from "./components/Dashboard/Admin/AdminDashboard";
-
+import AddProducts from "./components/Dashboard/Director/AddProducts/AddProducts";
+import ProductsList from "./components/Dashboard/Director/ProductsList/ProductsList"; // Add this import
 
 // Protected Route component with role checking
 const ProtectedRoute = ({ children, allowedRoles = [] }) => {
@@ -36,12 +37,11 @@ const PublicRoute = ({ children }) => {
         return children;
     }
 
-    // Redirect to role-specific dashboard
+    // Redirect to role-specific dashboard based on your current role system
     const userRole = authUtils.getUserRole();
     switch(userRole) {
-        case 0: return <Navigate to="/user-dashboard" />;
-        case 1: return <Navigate to="/manager-dashboard" />;
-        case 2: return <Navigate to="/admin-dashboard" />;
+        case 0: return <Navigate to="/director-dashboard" />; // Director
+        case 1: return <Navigate to="/admin-dashboard" />;    // Admin
         default: return <Navigate to="/dashboard" />;
     }
 };
@@ -51,9 +51,8 @@ const DashboardRedirect = () => {
     const userRole = authUtils.getUserRole();
 
     switch(userRole) {
-        case 0: return <Navigate to="/user-dashboard" replace />;
-        case 1: return <Navigate to="/manager-dashboard" replace />;
-        case 2: return <Navigate to="/admin-dashboard" replace />;
+        case 0: return <Navigate to="/director-dashboard" replace />; // Director
+        case 1: return <Navigate to="/admin-dashboard" replace />;    // Admin
         default: return <Welcome />;
     }
 };
@@ -68,29 +67,47 @@ function App() {
                         <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
                         <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
 
-                        {/*<Route path="/user-dashboard" element={<ProtectedRoute allowedRoles={[0]}><UserDashboard /></ProtectedRoute>} />*/}
-
-
-                        {/*<Route path="/products-for-sales" element={<ProtectedRoute allowedRoles={[0]}><ProductsPageforSales /></ProtectedRoute>} />*/}
-                        {/*<Route path="/checkout" element={<ProtectedRoute allowedRoles={[0]}><CheckoutPage /></ProtectedRoute>} />*/}
-                        {/*<Route path="/sales-analytics" element={<ProtectedRoute allowedRoles={[1]}><SalesAnalytics /></ProtectedRoute>} />*/}
-
+                        {/* Role-based dashboard routes */}
                         <Route path="/director-dashboard" element={<ProtectedRoute allowedRoles={[0]}><DirectorDashboard /></ProtectedRoute>} />
                         <Route path="/admin-dashboard" element={<ProtectedRoute allowedRoles={[1]}><AdminDashboard /></ProtectedRoute>} />
 
+                        {/* Product management routes - only for Directors */}
+                        <Route path="/add-products" element={<ProtectedRoute allowedRoles={[0]}><AddProducts /></ProtectedRoute>} />
+                        <Route path="/products-list" element={<ProtectedRoute allowedRoles={[0]}><ProductsList /></ProtectedRoute>} />
+
+                        {/* General dashboard redirect */}
                         <Route path="/dashboard" element={<ProtectedRoute><DashboardRedirect /></ProtectedRoute>} />
 
-                        {/*<Route path="/unauthorized" element={<div className="not-found"><h2>Access Denied</h2><p>You don't have permission to access this page.</p></div>} />*/}
+                        {/* Unauthorized access page */}
+                        <Route path="/unauthorized" element={
+                            <div className="not-found">
+                                <h2>Access Denied</h2>
+                                <p>You don't have permission to access this page.</p>
+                                <p>Your role: {authUtils.getUserRole() !== null ?
+                                    (authUtils.getUserRole() === 0 ? 'Director' :
+                                        authUtils.getUserRole() === 1 ? 'Admin' : 'Unknown')
+                                    : 'Not authenticated'}
+                                </p>
+                            </div>
+                        } />
 
-                        {/*<Route path="/" element={authUtils.isAuthenticated() ? <DashboardRedirect /> : <Navigate to="/login" />} />*/}
+                        {/* Root route */}
                         <Route path="/" element={authUtils.isAuthenticated() ? <DashboardRedirect /> : <Navigate to="/login" />} />
 
+                        {/* Public pages */}
                         <Route path="/about" element={<About />} />
 
-                        <Route path="*" element={<div className="not-found"><h2>Page Not Found</h2><p>The page you're looking for doesn't exist.</p></div>} />
+                        {/* 404 page */}
+                        <Route path="*" element={
+                            <div className="not-found">
+                                <h2>Page Not Found</h2>
+                                <p>The page you're looking for doesn't exist.</p>
+                            </div>
+                        } />
 
-                        {/*<Route path="/users" element={<ProtectedRoute allowedRoles={[2]}><UserTable /></ProtectedRoute>} />*/}
-                        {/*<Route path="/users-readonly" element={<ProtectedRoute allowedRoles={[1]}><UserTableManager /></ProtectedRoute>} />*/}
+                        {/* Future routes - uncommented and ready to use */}
+                        {/*<Route path="/users" element={<ProtectedRoute allowedRoles={[1]}><UserTable /></ProtectedRoute>} />*/}
+                        {/*<Route path="/users-readonly" element={<ProtectedRoute allowedRoles={[0]}><UserTableManager /></ProtectedRoute>} />*/}
                     </Routes>
                 </main>
                 <Footer />

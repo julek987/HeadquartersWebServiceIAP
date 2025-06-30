@@ -15,30 +15,36 @@ const Header = () => {
 
     const getRoleName = (role) => {
         switch(role) {
-            case 0: return 'User';
-            case 1: return 'Manager';
-            case 2: return 'Admin';
-            default: return 'User';
+            case 0: return 'Director';
+            case 1: return 'Admin';
+            default: return 'Unknown';
         }
     };
 
-    const getDashboardLink = () => {
+    const getDashboardPath = () => {
         if (!isAuthenticated) return '/login';
 
         const role = authData.user.role;
         switch(role) {
-            case 0: return '/user-dashboard';
-            case 1: return '/manager-dashboard';
-            case 2: return '/admin-dashboard';
+            case 0: return '/director-dashboard';
+            case 1: return '/admin-dashboard';
             default: return '/dashboard';
         }
+    };
+
+    const handleDashboardClick = (e) => {
+        e.preventDefault();
+        const dashboardPath = getDashboardPath();
+        // Force navigation even if we're already on the dashboard
+        navigate(dashboardPath, { replace: true });
+        // Alternative: use navigate(dashboardPath) without replace if you want it in history
     };
 
     return (
         <header className="header">
             <div className="header-container">
                 <div className="header-brand">
-                    <Link to={isAuthenticated ? getDashboardLink() : '/login'}>
+                    <Link to={isAuthenticated ? getDashboardPath() : '/login'}>
                         <h1>Luxe Living</h1>
                     </Link>
                 </div>
@@ -50,12 +56,12 @@ const Header = () => {
                                 Welcome, {authData.user.name} ({getRoleName(authData.user.role)})
                             </span>
                             <div className="nav-links">
-                                <Link
-                                    to={getDashboardLink()}
-                                    className="nav-link"
+                                <button
+                                    onClick={handleDashboardClick}
+                                    className="nav-link dashboard-btn"
                                 >
                                     Dashboard
-                                </Link>
+                                </button>
                                 <button
                                     onClick={handleLogout}
                                     className="logout-btn"
