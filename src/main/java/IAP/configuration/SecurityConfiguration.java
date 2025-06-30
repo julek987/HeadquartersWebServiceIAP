@@ -48,7 +48,6 @@ public class SecurityConfiguration {
                         .requestMatchers(
                                 new AntPathRequestMatcher("/"),
                                 new AntPathRequestMatcher("/login"),
-                                new AntPathRequestMatcher("/register"),
                                 new AntPathRequestMatcher("/auth/**"),
                                 new AntPathRequestMatcher("/css/**"),
                                 new AntPathRequestMatcher("/js/**"),
@@ -57,8 +56,7 @@ public class SecurityConfiguration {
                         ).permitAll()
                         // Role-based access control
                         .requestMatchers(new AntPathRequestMatcher("/admin/**")).hasRole("ADMIN")
-                        .requestMatchers(new AntPathRequestMatcher("/manager/**")).hasAnyRole("ADMIN", "MANAGER")
-                        .requestMatchers(new AntPathRequestMatcher("/user/**")).hasAnyRole("ADMIN", "MANAGER", "USER")
+                        .requestMatchers(new AntPathRequestMatcher("/director/**")).hasAnyRole("ADMIN", "DIRECTOR")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
