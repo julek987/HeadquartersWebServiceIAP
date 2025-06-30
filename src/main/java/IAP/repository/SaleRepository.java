@@ -10,4 +10,6 @@ import java.util.Optional;
 @Transactional
 public interface SaleRepository extends JpaRepository<Sale, Long> {
     Optional<Sale> findById(long id);
+    boolean existsByBranchIdAndBranchSaleId(long branchId, long branchSaleId);
+    Optional<Sale> findByBranchIdAndBranchSaleId(Long branchId, Long branchSaleId);
 }

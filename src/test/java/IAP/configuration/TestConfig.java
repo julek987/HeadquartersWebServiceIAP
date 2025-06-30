@@ -61,8 +61,8 @@ public class TestConfig {
     }
 
     @Bean
-    public OrderService orderService(OrderRepository repo) {
-        return new OrderServiceImpl(repo);
+    public OrderService orderService(OrderRepository orderRepository,  ProductRepository productRepository) {
+        return new OrderServiceImpl(orderRepository, productRepository);
     }
 
     //                ----- Product -----
@@ -94,8 +94,8 @@ public class TestConfig {
     }
 
     @Bean
-    public SaleService saleService(SaleRepository repo) {
-        return new SaleServiceImpl(repo);
+    public SaleService saleService(SaleRepository saleRepository, BranchRepository branchRepository) {
+        return new SaleServiceImpl(saleRepository,  branchRepository);
     }
 
 }
