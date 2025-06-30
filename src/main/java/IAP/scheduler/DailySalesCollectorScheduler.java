@@ -19,7 +19,7 @@ public class DailySalesCollectorScheduler {
     // @Scheduled(cron = "0 0 8 * * *") // Every day at 8:00 AM
     @Scheduled(cron = "0/15 * * * * *") //
     public void getDailySalesFromBranches() {
-        String targetUrl = "https://www.iana.org/assignments/media-types/application/vnd.api+json"; // example URL
+        String branchSaleUrl = "http://localhost:8080/api/sales";
 
         try {
 //            ResponseEntity<String> response = restTemplate.getForEntity(targetUrl, String.class);
