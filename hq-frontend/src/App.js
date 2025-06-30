@@ -5,7 +5,7 @@ import './components/Layout/Footer/footer.css'
 import Register from './components/Auth/Register/Register';
 import Login from './components/Auth/Login/Login';
 import Welcome from './components/Dashboard/Welcome';
-import { authUtils } from './services/api';
+import * as apiServices from './services/api'; // Import everything from api
 import './App.css';
 import Header from './components/Layout/Header/Header';
 import Footer from './components/Layout/Footer/Footer';
@@ -13,10 +13,20 @@ import About from "./components/About/About";
 import DirectorDashboard from "./components/Dashboard/Director/DirectorDashboard";
 import AdminDashboard from "./components/Dashboard/Admin/AdminDashboard";
 import AddProducts from "./components/Dashboard/Director/AddProducts/AddProducts";
-import ProductsList from "./components/Dashboard/Director/ProductsList/ProductsList"; // Add this import
+import ProductsList from "./components/Dashboard/Director/ProductsList/ProductsList";
+import SupplyRequests from "./components/Dashboard/Director/SupplyRequests/SupplyRequests";
+
+// Get authUtils from the imported services
+const { authUtils } = apiServices;
 
 // Protected Route component with role checking
 const ProtectedRoute = ({ children, allowedRoles = [] }) => {
+    // Add safety check
+    if (!authUtils) {
+        console.error('authUtils is not available');
+        return <Navigate to="/login" />;
+    }
+
     const authData = authUtils.getAuthData();
 
     if (!authUtils.isAuthenticated()) {
@@ -33,6 +43,11 @@ const ProtectedRoute = ({ children, allowedRoles = [] }) => {
 
 // Public Route component (redirect to appropriate dashboard if already authenticated)
 const PublicRoute = ({ children }) => {
+    // Add safety check
+    if (!authUtils) {
+        return children;
+    }
+
     if (!authUtils.isAuthenticated()) {
         return children;
     }
@@ -48,6 +63,11 @@ const PublicRoute = ({ children }) => {
 
 // Component to redirect authenticated users to their appropriate dashboard
 const DashboardRedirect = () => {
+    // Add safety check
+    if (!authUtils) {
+        return <Navigate to="/login" />;
+    }
+
     const userRole = authUtils.getUserRole();
 
     switch(userRole) {
@@ -75,6 +95,9 @@ function App() {
                         <Route path="/add-products" element={<ProtectedRoute allowedRoles={[0]}><AddProducts /></ProtectedRoute>} />
                         <Route path="/products-list" element={<ProtectedRoute allowedRoles={[0]}><ProductsList /></ProtectedRoute>} />
 
+                        {/* Supply requests route - only for Directors */}
+                        <Route path="/supply-requests" element={<ProtectedRoute allowedRoles={[0]}><SupplyRequests /></ProtectedRoute>} />
+
                         {/* General dashboard redirect */}
                         <Route path="/dashboard" element={<ProtectedRoute><DashboardRedirect /></ProtectedRoute>} />
 
@@ -83,7 +106,7 @@ function App() {
                             <div className="not-found">
                                 <h2>Access Denied</h2>
                                 <p>You don't have permission to access this page.</p>
-                                <p>Your role: {authUtils.getUserRole() !== null ?
+                                <p>Your role: {authUtils && authUtils.getUserRole() !== null ?
                                     (authUtils.getUserRole() === 0 ? 'Director' :
                                         authUtils.getUserRole() === 1 ? 'Admin' : 'Unknown')
                                     : 'Not authenticated'}
@@ -92,7 +115,7 @@ function App() {
                         } />
 
                         {/* Root route */}
-                        <Route path="/" element={authUtils.isAuthenticated() ? <DashboardRedirect /> : <Navigate to="/login" />} />
+                        <Route path="/" element={authUtils && authUtils.isAuthenticated() ? <DashboardRedirect /> : <Navigate to="/login" />} />
 
                         {/* Public pages */}
                         <Route path="/about" element={<About />} />

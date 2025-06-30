@@ -75,8 +75,19 @@ public class SupplyRequestServiceImpl implements SupplyRequestService {
 
         request.setBranchRequestID(dto.branchRequestID);
         request.setStatus(dto.status);
-        request.setReviewedBy(dto.reviewedBy);
-        request.setReviewedAt(dto.reviewedAt);
+
+        // CRITICAL FIX: Only set review fields for non-pending requests
+        // This prevents the 409 conflict error when trying to accept/reject requests
+        if (dto.status == SupplyRequest.Status.PENDING) {
+            // For pending requests, these fields should be null
+            request.setReviewedBy(null);
+            request.setReviewedAt(null);
+        } else {
+            // Only set review fields if the request is not pending
+            request.setReviewedBy(dto.reviewedBy);
+            request.setReviewedAt(dto.reviewedAt);
+        }
+
         request.setAnnotation(dto.annotation);
         request.setCreatedAt(dto.createdAt != null ? dto.createdAt : LocalDateTime.now());
         request.setModifiedAt(LocalDateTime.now());
@@ -88,6 +99,5 @@ public class SupplyRequestServiceImpl implements SupplyRequestService {
     public boolean existsByBranchIdAndBranchRequestId(Long branchId, Long branchRequestId) {
         return supplyRequestRepository.existsByBranchIdAndBranchRequestID(branchId, branchRequestId);
     }
-
 
 }

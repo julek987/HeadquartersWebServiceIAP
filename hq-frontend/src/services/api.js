@@ -111,9 +111,6 @@ export const authUtils = {
         if (typeof window !== 'undefined') {
             window.location.href = '/login';
         }
-
-        // Or if you're using React Router's navigate, you can modify this
-        // to accept a navigate function as parameter
     }
 };
 
@@ -145,18 +142,14 @@ export const authAPI = {
     register: async (userData) => {
         try {
             const response = await api.post('/auth/register', userData);
-            return response.data; // Return just the data, not the full response
+            return response.data;
         } catch (error) {
-            // Handle different types of error responses
             if (error.response) {
-                // Server responded with error status
                 const errorMessage = error.response.data || `Registration failed with status ${error.response.status}`;
                 throw new Error(errorMessage);
             } else if (error.request) {
-                // Request was made but no response received
                 throw new Error('No response from server. Please check your connection.');
             } else {
-                // Something else happened
                 throw new Error('Registration failed: ' + error.message);
             }
         }
@@ -185,11 +178,8 @@ export const authAPI = {
                 });
             } catch (error) {
                 console.error('Logout API error:', error);
-                // Continue with client-side logout even if API fails
             }
         }
-
-        // Clear client-side auth data
         authUtils.logout();
     }
 };
@@ -262,12 +252,9 @@ export const productAPI = {
         const headers = {
             'Content-Type': 'application/json'
         };
-
-        // Add authorization header if token exists
         if (token) {
             headers.Authorization = `Bearer ${token}`;
         }
-
         const response = await api.post('/product', productData, { headers });
         return response.data;
     },
@@ -276,11 +263,9 @@ export const productAPI = {
     getProducts: async () => {
         const token = authUtils.getToken();
         const headers = {};
-
         if (token) {
             headers.Authorization = `Bearer ${token}`;
         }
-
         const response = await api.get('/product', { headers });
         return response.data;
     },
@@ -289,11 +274,9 @@ export const productAPI = {
     getProduct: async (id) => {
         const token = authUtils.getToken();
         const headers = {};
-
         if (token) {
             headers.Authorization = `Bearer ${token}`;
         }
-
         const response = await api.get(`/product/${id}`, { headers });
         return response.data;
     },
@@ -304,11 +287,9 @@ export const productAPI = {
         const headers = {
             'Content-Type': 'application/json'
         };
-
         if (token) {
             headers.Authorization = `Bearer ${token}`;
         }
-
         const response = await api.put(`/product/${id}`, productData, { headers });
         return response.data;
     },
@@ -317,27 +298,23 @@ export const productAPI = {
     deleteProduct: async (id) => {
         const token = authUtils.getToken();
         const headers = {};
-
         if (token) {
             headers.Authorization = `Bearer ${token}`;
         }
-
         const response = await api.delete(`/product/${id}`, { headers });
         return response.data;
     }
 };
 
-// Image API endpoints - Add these for your ProductsList component
+// Image API endpoints
 export const imageAPI = {
     // Get all images
     getImages: async () => {
         const token = authUtils.getToken();
         const headers = {};
-
         if (token) {
             headers.Authorization = `Bearer ${token}`;
         }
-
         const response = await api.get('/image', { headers });
         return response.data;
     },
@@ -346,11 +323,9 @@ export const imageAPI = {
     getProductImages: async (productId) => {
         const token = authUtils.getToken();
         const headers = {};
-
         if (token) {
             headers.Authorization = `Bearer ${token}`;
         }
-
         const response = await api.get(`/image/product/${productId}`, { headers });
         return response.data;
     },
@@ -361,11 +336,9 @@ export const imageAPI = {
         const headers = {
             'Content-Type': 'application/json'
         };
-
         if (token) {
             headers.Authorization = `Bearer ${token}`;
         }
-
         const response = await api.post('/image', imageData, { headers });
         return response.data;
     },
@@ -376,11 +349,9 @@ export const imageAPI = {
         const headers = {
             'Content-Type': 'application/json'
         };
-
         if (token) {
             headers.Authorization = `Bearer ${token}`;
         }
-
         const response = await api.put(`/image/${id}`, imageData, { headers });
         return response.data;
     },
@@ -389,12 +360,83 @@ export const imageAPI = {
     deleteImage: async (id) => {
         const token = authUtils.getToken();
         const headers = {};
-
         if (token) {
             headers.Authorization = `Bearer ${token}`;
         }
-
         const response = await api.delete(`/image/${id}`, { headers });
+        return response.data;
+    }
+};
+
+// Supply Request API endpoints
+export const supplyAPI = {
+    // Get all supply requests
+    getSupplyRequests: async () => {
+        const token = authUtils.getToken();
+        const headers = {};
+        if (token) {
+            headers.Authorization = `Bearer ${token}`;
+        }
+        const response = await api.get('/supply-requests', { headers });
+        return response.data;
+    },
+
+    // Get only pending supply requests
+    getPendingSupplyRequests: async () => {
+        const token = authUtils.getToken();
+        const headers = {};
+        if (token) {
+            headers.Authorization = `Bearer ${token}`;
+        }
+        const response = await api.get('/supply-requests/pending', { headers });
+        return response.data;
+    },
+
+    // Get supply orders for a specific supply request
+    getSupplyOrders: async (supplyRequestId) => {
+        const token = authUtils.getToken();
+        const headers = {};
+        if (token) {
+            headers.Authorization = `Bearer ${token}`;
+        }
+        const response = await api.get(`/supply-requests/${supplyRequestId}`, { headers });
+        return response.data;
+    },
+
+    // Update supply request (accept/reject)
+    updateSupplyRequest: async (supplyRequestId, decision) => {
+        const token = authUtils.getToken();
+        const headers = {
+            'Content-Type': 'application/json'
+        };
+        if (token) {
+            headers.Authorization = `Bearer ${token}`;
+        }
+        const response = await api.put(`/supply-requests/${supplyRequestId}`, decision, { headers });
+        return response.data;
+    },
+
+    // Create a new supply request
+    createSupplyRequest: async (requestData) => {
+        const token = authUtils.getToken();
+        const headers = {
+            'Content-Type': 'application/json'
+        };
+        if (token) {
+            headers.Authorization = `Bearer ${token}`;
+        }
+        const response = await api.post('/supply-requests', requestData, { headers });
+        return response.data;
+    },
+
+    // Delete a supply request
+    deleteSupplyRequest: async (supplyRequestId) => {
+        const token = authUtils.getToken();
+        const headers = {};
+        if (token) {
+            headers.Authorization = `Bearer ${token}`;
+        }
+        const response = await api.delete(`/supply-requests/${supplyRequestId}`, { headers });
         return response.data;
     }
 };
