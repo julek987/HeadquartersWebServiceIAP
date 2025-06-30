@@ -126,7 +126,7 @@ const Login = () => {
                 </form>
 
                 <div className="auth-links">
-                    <p>Don't have an account? <a href="/register">Create one here</a></p>
+
                 </div>
 
                 <div className="test-credentials" style={{marginTop: '20px', padding: '15px', background: '#f0f8ff', borderRadius: '8px', fontSize: '14px'}}>

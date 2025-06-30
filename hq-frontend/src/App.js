@@ -15,6 +15,7 @@ import AdminDashboard from "./components/Dashboard/Admin/AdminDashboard";
 import AddProducts from "./components/Dashboard/Director/AddProducts/AddProducts";
 import ProductsList from "./components/Dashboard/Director/ProductsList/ProductsList";
 import SupplyRequests from "./components/Dashboard/Director/SupplyRequests/SupplyRequests";
+import ManageBranches from "./components/Dashboard/Director/ManageBranches/ManageBranches"; // Add this import
 
 // Get authUtils from the imported services
 const { authUtils } = apiServices;
@@ -97,6 +98,9 @@ function App() {
 
                         {/* Supply requests route - only for Directors */}
                         <Route path="/supply-requests" element={<ProtectedRoute allowedRoles={[0]}><SupplyRequests /></ProtectedRoute>} />
+
+                        {/* Branch management route - only for Directors */}
+                        <Route path="/manage-branches" element={<ProtectedRoute allowedRoles={[0]}><ManageBranches /></ProtectedRoute>} />
 
                         {/* General dashboard redirect */}
                         <Route path="/dashboard" element={<ProtectedRoute><DashboardRedirect /></ProtectedRoute>} />

@@ -20,6 +20,10 @@ const DirectorDashboard = () => {
         navigate('/products-list');
     };
 
+    const handleManageBranches = () => {
+        navigate('/manage-branches');
+    };
+
     return (
         <div className="dashboard-container">
             <div className="welcome-header">
@@ -73,6 +77,12 @@ const DirectorDashboard = () => {
                                 onClick={handleViewProducts}
                             >
                                 Display Products
+                            </button>
+                            <button
+                                className="director-btn manage-branches"
+                                onClick={handleManageBranches}
+                            >
+                                Manage Branches
                             </button>
                         </div>
                     </div>

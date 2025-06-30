@@ -440,3 +440,65 @@ export const supplyAPI = {
         return response.data;
     }
 };
+
+// Branch API endpoints
+export const branchAPI = {
+    // Get all branches
+    getBranches: async () => {
+        const token = authUtils.getToken();
+        const headers = {};
+        if (token) {
+            headers.Authorization = `Bearer ${token}`;
+        }
+        const response = await api.get('/branch', { headers });
+        return response.data;
+    },
+
+    // Get branch by ID
+    getBranch: async (id) => {
+        const token = authUtils.getToken();
+        const headers = {};
+        if (token) {
+            headers.Authorization = `Bearer ${token}`;
+        }
+        const response = await api.get(`/branch/${id}`, { headers });
+        return response.data;
+    },
+
+    // Add a new branch
+    addBranch: async (branchData) => {
+        const token = authUtils.getToken();
+        const headers = {
+            'Content-Type': 'application/json'
+        };
+        if (token) {
+            headers.Authorization = `Bearer ${token}`;
+        }
+        const response = await api.post('/branch', branchData, { headers });
+        return response.data;
+    },
+
+    // Update branch
+    updateBranch: async (id, branchData) => {
+        const token = authUtils.getToken();
+        const headers = {
+            'Content-Type': 'application/json'
+        };
+        if (token) {
+            headers.Authorization = `Bearer ${token}`;
+        }
+        const response = await api.put(`/branch/${id}`, branchData, { headers });
+        return response.data;
+    },
+
+    // Delete branch
+    deleteBranch: async (id) => {
+        const token = authUtils.getToken();
+        const headers = {};
+        if (token) {
+            headers.Authorization = `Bearer ${token}`;
+        }
+        const response = await api.delete(`/branch/${id}`, { headers });
+        return response.data;
+    }
+};
