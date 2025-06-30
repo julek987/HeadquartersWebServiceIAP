@@ -16,7 +16,6 @@ public class Sale {
     @Column(name = "sale_id")
     private Long id;
 
-    @NotNull
     private Long branchSaleId;
 
     @ManyToOne
