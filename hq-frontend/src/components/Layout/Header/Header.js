@@ -45,7 +45,7 @@ const Header = () => {
             <div className="header-container">
                 <div className="header-brand">
                     <Link to={isAuthenticated ? getDashboardPath() : '/login'}>
-                        <h1>Luxe Living</h1>
+                        <h1>HQ Luxe Living</h1>
                     </Link>
                 </div>
 

@@ -17,10 +17,12 @@
     justify-content: space-between;
     align-items: center;
     min-height: 80px;
+    width: 100%;
 }
 
 .header-brand {
     flex-shrink: 0;
+    margin-right: auto; /* Pushes the brand to the far left */
 }
 
 .header-brand a {
@@ -42,6 +44,7 @@
     text-transform: uppercase;
     font-family: 'Georgia', serif;
     position: relative;
+    white-space: nowrap; /* Prevents title from wrapping */
 }
 
 .header-brand h1::after {
@@ -63,6 +66,8 @@
     display: flex;
     align-items: center;
     gap: 2rem;
+    margin-left: auto; /* Pushes the nav to the far right */
+    flex-shrink: 0;
 }
 
 .welcome-text {
@@ -75,12 +80,14 @@
     border-radius: 25px;
     border: 1px solid rgba(210, 134, 106, 0.2);
     backdrop-filter: blur(5px);
+    white-space: nowrap; /* Prevents welcome text from wrapping */
 }
 
 .nav-links {
     display: flex;
     align-items: center;
     gap: 1rem;
+    flex-shrink: 0;
 }
 
 .nav-link {
@@ -96,6 +103,8 @@
     overflow: hidden;
     background: transparent;
     border: 1px solid transparent;
+    cursor: pointer;
+    white-space: nowrap; /* Prevents button text from wrapping */
 }
 
 .nav-link::before {
@@ -121,6 +130,17 @@
     left: 0;
 }
 
+/* Dashboard button specific styles - inherits from nav-link */
+.dashboard-btn {
+    font-family: inherit;
+}
+
+.dashboard-btn:focus {
+    outline: none;
+    border-color: rgba(210, 134, 106, 0.5);
+    box-shadow: 0 0 0 2px rgba(210, 134, 106, 0.2);
+}
+
 .logout-btn {
     background: linear-gradient(135deg, #322052 0%, #2a1a42 100%);
     color: #ffffff;
@@ -134,6 +154,8 @@
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
+    font-family: inherit;
+    white-space: nowrap; /* Prevents button text from wrapping */
 }
 
 .logout-btn::before {
@@ -161,6 +183,11 @@
     transform: translateY(0);
 }
 
+.logout-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(210, 134, 106, 0.3);
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .header-container {
@@ -172,15 +199,21 @@
         padding-bottom: 1rem;
     }
 
+    .header-brand {
+        margin-right: 0; /* Reset margin on mobile */
+    }
+
     .header-brand h1 {
         font-size: 1.5rem;
         letter-spacing: 1px;
+        text-align: center;
     }
 
     .header-nav {
         flex-direction: column;
         gap: 1rem;
         width: 100%;
+        margin-left: 0; /* Reset margin on mobile */
     }
 
     .welcome-text {

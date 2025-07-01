@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import './SupplyRequests.css'; // Import your CSS file
 
 const SupplyRequests = () => {
     const [pendingRequests, setPendingRequests] = useState([]);
     const [expandedRequest, setExpandedRequest] = useState(null);
     const [requestDetails, setRequestDetails] = useState({});
+    const [branchNames, setBranchNames] = useState({}); // Store branch names by ID
     const [loading, setLoading] = useState(true);
     const [actionLoading, setActionLoading] = useState(null);
     const [error, setError] = useState(null);
@@ -23,43 +25,76 @@ const SupplyRequests = () => {
 
     const X = () => (
         <span className="inline-block w-4 h-4 relative">
-      <span className="absolute inset-0 border-b-2 border-current transform rotate-45"></span>
-      <span className="absolute inset-0 border-b-2 border-current transform -rotate-45"></span>
-    </span>
+            <span className="absolute inset-0 border-b-2 border-current transform rotate-45"></span>
+            <span className="absolute inset-0 border-b-2 border-current transform -rotate-45"></span>
+        </span>
     );
 
     const Eye = () => (
         <span className="inline-block w-4 h-4 border-2 border-current rounded-full relative">
-      <span className="absolute top-1/2 left-1/2 w-1.5 h-1.5 bg-current rounded-full transform -translate-x-1/2 -translate-y-1/2"></span>
-    </span>
+            <span className="absolute top-1/2 left-1/2 w-1.5 h-1.5 bg-current rounded-full transform -translate-x-1/2 -translate-y-1/2"></span>
+        </span>
     );
 
     const Calendar = () => (
         <span className="inline-block w-4 h-4 border-2 border-current rounded relative">
-      <span className="absolute top-0 left-1 w-0.5 h-1 bg-current"></span>
-      <span className="absolute top-0 right-1 w-0.5 h-1 bg-current"></span>
-      <span className="absolute top-1.5 left-0.5 right-0.5 h-0.5 bg-current"></span>
-    </span>
+            <span className="absolute top-0 left-1 w-0.5 h-1 bg-current"></span>
+            <span className="absolute top-0 right-1 w-0.5 h-1 bg-current"></span>
+            <span className="absolute top-1.5 left-0.5 right-0.5 h-0.5 bg-current"></span>
+        </span>
     );
 
     const User = () => (
         <span className="inline-block w-4 h-4 relative">
-      <span className="absolute top-0 left-1/2 w-2 h-2 border-2 border-current rounded-full transform -translate-x-1/2"></span>
-      <span className="absolute bottom-0 left-0 right-0 h-2 border-2 border-current border-t-0 rounded-b-full"></span>
-    </span>
+            <span className="absolute top-0 left-1/2 w-2 h-2 border-2 border-current rounded-full transform -translate-x-1/2"></span>
+            <span className="absolute bottom-0 left-0 right-0 h-2 border-2 border-current border-t-0 rounded-b-full"></span>
+        </span>
     );
 
     const FileText = () => (
         <span className="inline-block w-4 h-4 border-2 border-current rounded relative">
-      <span className="absolute top-1 left-1 right-1 h-0.5 bg-current"></span>
-      <span className="absolute top-2 left-1 right-1 h-0.5 bg-current"></span>
-      <span className="absolute top-3 left-1 right-2 h-0.5 bg-current"></span>
-    </span>
+            <span className="absolute top-1 left-1 right-1 h-0.5 bg-current"></span>
+            <span className="absolute top-2 left-1 right-1 h-0.5 bg-current"></span>
+            <span className="absolute top-3 left-1 right-2 h-0.5 bg-current"></span>
+        </span>
     );
+
+    const Building = () => (
+        <span className="inline-block w-4 h-4 border-2 border-current relative">
+            <span className="absolute top-1 left-1 w-1 h-1 border border-current"></span>
+            <span className="absolute top-1 right-1 w-1 h-1 border border-current"></span>
+            <span className="absolute bottom-1 left-1 right-1 h-1 border-t border-current"></span>
+        </span>
+    );
+
+    // Fetch branch names
+    const fetchBranchNames = async () => {
+        try {
+            const response = await fetch('/api/branch');
+            if (!response.ok) throw new Error('Failed to fetch branches');
+            const branches = await response.json();
+
+            // Create a map of branch ID to branch name
+            const branchNameMap = {};
+            branches.forEach(branch => {
+                branchNameMap[branch.id] = branch.name;
+            });
+            setBranchNames(branchNameMap);
+        } catch (err) {
+            console.error('Error loading branch names:', err.message);
+            // Don't set error here as this is not critical - we can fall back to showing IDs
+        }
+    };
 
     // Fetch pending requests on component mount
     useEffect(() => {
-        fetchPendingRequests();
+        const loadData = async () => {
+            await Promise.all([
+                fetchPendingRequests(),
+                fetchBranchNames()
+            ]);
+        };
+        loadData();
     }, []);
 
     const fetchPendingRequests = async () => {
@@ -139,173 +174,169 @@ const SupplyRequests = () => {
         }
     };
 
-    const formatDate = (dateString) => {
-        if (!dateString) return 'N/A';
-        return new Date(dateString).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
+    // Helper function to get branch name or fall back to ID
+    const getBranchDisplayName = (branchId) => {
+        return branchNames[branchId] || `Branch ${branchId}`;
     };
 
     if (loading) {
         return (
-            <div className="flex justify-center items-center min-h-screen">
-                <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
+            <div className="loading">
+                Loading pending requests...
             </div>
         );
     }
 
     return (
-        <div className="max-w-6xl mx-auto p-6 bg-gray-50 min-h-screen">
-            <div className="mb-8">
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">Supply Request Management</h1>
-                <p className="text-gray-600">Review and manage pending supply requests from branches</p>
+        <div className="supply-requests-container">
+            <div className="page-header">
+                <h1>Supply Request Management</h1>
+                <p>Review and manage pending supply requests from branches</p>
             </div>
 
             {error && (
-                <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-                    <div className="flex items-center">
+                <div className="error-message">
+                    <div>
                         <X />
-                        <p className="text-red-800 ml-2">{error}</p>
+                        <span>{error}</span>
                     </div>
                     <button
                         onClick={() => setError(null)}
-                        className="mt-2 text-sm text-red-600 hover:text-red-800 underline"
+                        className="close-error"
                     >
-                        Dismiss
+                        ×
                     </button>
                 </div>
             )}
 
-            {pendingRequests.length === 0 ? (
-                <div className="text-center py-12">
-                    <div className="mx-auto mb-4 w-16 h-16 flex items-center justify-center">
-                        <FileText />
-                    </div>
-                    <h3 className="text-xl font-medium text-gray-900 mb-2">No Pending Requests</h3>
-                    <p className="text-gray-500">All supply requests have been processed.</p>
-                    <button
-                        onClick={fetchPendingRequests}
-                        className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                    >
-                        Refresh
-                    </button>
-                </div>
-            ) : (
-                <div className="space-y-4">
-                    {pendingRequests.map((request) => (
-                        <div key={request.id} className="bg-white rounded-lg shadow-md border border-gray-200">
-                            {/* Request Header */}
-                            <div className="p-6 border-b border-gray-200">
-                                <div className="flex justify-between items-start">
-                                    <div className="flex-1">
-                                        <div className="flex items-center gap-4 mb-3">
-                                            <h3 className="text-lg font-semibold text-gray-900">
-                                                Request #{request.id}
-                                            </h3>
-                                            <span className="px-3 py-1 bg-yellow-100 text-yellow-800 text-sm font-medium rounded-full">
-                        {request.status}
-                      </span>
-                                        </div>
+            <div className="requests-section">
+                <h2>Pending Requests</h2>
 
-                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600">
-                                            <div className="flex items-center gap-2">
-                                                <User />
-                                                <span>Branch ID: {request.branchId}</span>
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                <Calendar />
-                                                <span>Created: {formatDate(request.createdAt)}</span>
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                <FileText />
-                                                <span>Branch Request: #{request.branchRequestID}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="flex items-center gap-2 ml-4">
-                                        <button
-                                            onClick={() => toggleRequestDetails(request.id)}
-                                            className="flex items-center gap-2 px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
-                                        >
-                                            <Eye />
-                                            View Details
-                                            {expandedRequest === request.id ? <ChevronUp /> : <ChevronDown />}
-                                        </button>
-                                    </div>
-                                </div>
-
-                                {/* Action Buttons */}
-                                <div className="flex gap-3 mt-4">
-                                    <button
-                                        onClick={() => handleRequestAction(request.id, 'accept')}
-                                        disabled={actionLoading === request.id}
-                                        className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                                    >
-                                        <Check />
-                                        {actionLoading === request.id ? 'Processing...' : 'Accept'}
-                                    </button>
-
-                                    <button
-                                        onClick={() => {
-                                            const annotation = prompt('Enter rejection reason (optional):');
-                                            if (annotation !== null) { // User didn't cancel
-                                                handleRequestAction(request.id, 'reject', annotation);
-                                            }
-                                        }}
-                                        disabled={actionLoading === request.id}
-                                        className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                                    >
-                                        <X />
-                                        Reject
-                                    </button>
-                                </div>
-                            </div>
-
-                            {/* Expandable Request Details */}
-                            {expandedRequest === request.id && (
-                                <div className="p-6 bg-gray-50">
-                                    <h4 className="text-md font-semibold text-gray-900 mb-4">Order Details</h4>
-
-                                    {requestDetails[request.id] ? (
-                                        <div className="space-y-3">
-                                            {requestDetails[request.id].map((order, index) => (
-                                                <div key={order.id} className="bg-white p-4 rounded-lg border border-gray-200">
-                                                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
-                                                        <div>
-                                                            <span className="font-medium text-gray-700">Order #{index + 1}</span>
-                                                        </div>
-                                                        <div>
-                                                            <span className="text-gray-600">Product ID: </span>
-                                                            <span className="font-medium">{order.productId}</span>
-                                                        </div>
-                                                        <div>
-                                                            <span className="text-gray-600">Quantity: </span>
-                                                            <span className="font-medium">{order.quantity}</span>
-                                                        </div>
-                                                        <div>
-                                                            <span className="text-gray-600">Branch: </span>
-                                                            <span className="font-medium">{order.branchId}</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    ) : (
-                                        <div className="flex justify-center py-8">
-                                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-                                        </div>
-                                    )}
-                                </div>
-                            )}
+                {pendingRequests.length === 0 ? (
+                    <div className="no-requests">
+                        <div>
+                            <FileText />
                         </div>
-                    ))}
-                </div>
-            )}
+                        <h3>No Pending Requests</h3>
+                        <p>All supply requests have been processed.</p>
+                        <button
+                            onClick={fetchPendingRequests}
+                            className="back-btn"
+                        >
+                            Refresh
+                        </button>
+                    </div>
+                ) : (
+                    <div className="requests-table">
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>Request ID</th>
+                                <th>Branch</th>
+                                <th>Status</th>
+                                <th>Branch Request ID</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {pendingRequests.map((request) => (
+                                <React.Fragment key={request.id}>
+                                    <tr>
+                                        <td>#{request.id}</td>
+                                        <td>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                                <Building />
+                                                {getBranchDisplayName(request.branchId)}
+                                            </div>
+                                        </td>
+                                        <td>
+                                                <span className={`status-badge ${request.status.toLowerCase()}`}>
+                                                    {request.status}
+                                                </span>
+                                        </td>
+                                        <td>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                                <FileText />
+                                                #{request.branchRequestID}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div className="action-buttons">
+                                                <button
+                                                    onClick={() => toggleRequestDetails(request.id)}
+                                                    className="view-btn"
+                                                >
+                                                    <Eye />
+                                                    {expandedRequest === request.id ? 'Hide' : 'View'} Details
+                                                </button>
+                                                <button
+                                                    onClick={() => handleRequestAction(request.id, 'accept')}
+                                                    disabled={actionLoading === request.id}
+                                                    className="accept-btn"
+                                                >
+                                                    <Check />
+                                                    {actionLoading === request.id ? 'Processing...' : 'Accept'}
+                                                </button>
+                                                <button
+                                                    onClick={() => {
+                                                        const annotation = prompt('Enter rejection reason (optional):');
+                                                        if (annotation !== null) {
+                                                            handleRequestAction(request.id, 'reject', annotation);
+                                                        }
+                                                    }}
+                                                    disabled={actionLoading === request.id}
+                                                    className="reject-btn"
+                                                >
+                                                    <X />
+                                                    Reject
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {expandedRequest === request.id && (
+                                        <tr>
+                                            <td colSpan="5" style={{ padding: 0 }}>
+                                                <div style={{ padding: '2rem', background: '#f8f9fa', borderTop: '1px solid #dee2e6' }}>
+                                                    <h4>Order Details</h4>
+                                                    {requestDetails[request.id] ? (
+                                                        <div className="orders-table">
+                                                            <table>
+                                                                <thead>
+                                                                <tr>
+                                                                    <th>Order #</th>
+                                                                    <th>Product ID</th>
+                                                                    <th>Quantity</th>
+                                                                    <th>Branch</th>
+                                                                </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                {requestDetails[request.id].map((order, index) => (
+                                                                    <tr key={order.id}>
+                                                                        <td>{index + 1}</td>
+                                                                        <td>{order.productId}</td>
+                                                                        <td>{order.quantity}</td>
+                                                                        <td>{getBranchDisplayName(order.branchId)}</td>
+                                                                    </tr>
+                                                                ))}
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    ) : (
+                                                        <div className="loading">
+                                                            Loading order details...
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    )}
+                                </React.Fragment>
+                            ))}
+                            </tbody>
+                        </table>
+                    </div>
+                )}
+            </div>
         </div>
     );
 };
